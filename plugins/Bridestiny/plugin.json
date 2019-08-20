@@ -1,0 +1,27 @@
+{
+	"name" : "Bridestiny",
+	"namespace" : "Bridestiny",
+	"route_prefix" : "bridestiny",
+	"author" : "Purple CMS",
+	"image" : "",
+	"preview" : "",
+    "description" : "Wedding vendors portal.",
+    "status" : "active",
+    "dashboard_sidebar" : 
+        {
+            "value" : "yes", 
+            "name" : "Purple/Sidebar/dashboard_sidebar" 
+        },
+    "dashboard_assets" : 
+        [{
+            "type" : "head",
+            "value" : "yes",
+            "name" : "Purple/Assets/dashboard_head"   
+        },
+        {
+            "type" : "script",
+            "value" : "yes",
+            "name" : "Purple/Assets/dashboard_script" 
+        }],
+	"version" : "1.0"
+}

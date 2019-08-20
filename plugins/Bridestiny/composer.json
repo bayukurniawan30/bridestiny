@@ -1,0 +1,22 @@
+{
+    "name": "bayukurniawan30/Bridestiny",
+    "description": "Bridestiny plugin for Purple CMS",
+    "type": "cakephp-plugin",
+    "license": "MIT",
+    "require": {
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7.14|^6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bridestiny\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Bridestiny\\Test\\": "tests/",
+            "Cake\\Test\\": "vendor/cakephp/cakephp/tests/"
+        }
+    }
+}

@@ -1,0 +1,74 @@
+/* Cards */
+.product-card-title a, .product-card-price {
+    font-weight: 700;
+}
+
+/* Form */
+.block-dynamic-field {
+    position: relative;
+}
+.button-remove-field, .button-clear-field {
+    display: none!important;
+    position: absolute;
+    right: -30px;
+    top: 2px;
+}
+.block-dynamic-field:hover .button-remove-field, .block-dynamic-field:hover .button-clear-field {
+    display: block!important;
+}
+.custom-labelauty label {
+    color: #ffffff;
+    margin-bottom: 0!important;
+}
+.custom-labelauty > label {
+    font-size: 0!important;
+}
+.labelauty-2-options > label {
+    width: 50%;
+}
+.labelauty-3-options > label {
+    width: 33.3333333333333%;
+}
+
+/* Uploader */
+#drag-and-drop-thumbnail {
+    border: dashed 2px #b66dff;
+}
+
+/* Table */
+.uk-table.purple-smaller-table th, .uk-table.purple-smaller-table td {
+    font-size: 0.8rem;
+}
+.purple-smaller-table .btn.btn-icon {
+    width: 35px;
+    height: 35px;
+}
+.hex-code-preview {
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    margin-left: 3px;
+    border: 1px solid #999;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+}
+
+/* Datepicker */
+.datepicker table tr td.active, .datepicker table tr td.active.disabled, .datepicker table tr td.active.disabled:hover, .datepicker table tr td.active:hover {
+    background-color: #da8cff!important;
+    background-image: -moz-linear-gradient(to bottom,#da8cff,#9a55ff)!important;
+    background-image: -ms-linear-gradient(to bottom,#da8cff,#9a55ff)!important;
+    background-image: -webkit-gradient(linear,0 0,0 100%,from(#da8cff),to(#9a55ff))!important;
+    background-image: -webkit-linear-gradient(to bottom,#da8cff,#9a55ff)!important;
+    background-image: -o-linear-gradient(to bottom,#da8cff,#9a55ff)!important;
+    background-image: linear-gradient(to bottom,#da8cff,#9a55ff)!important;
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#da8cff', endColorstr='#9a55ff', GradientType=0)!important;
+    border-color: #da8cff #da8cff #9a55ff!important;
+    border-color: rgba(0,0,0,.1) rgba(0,0,0,.1) rgba(0,0,0,.25);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+}
+.datepicker table tr td.disabled, .datepicker table tr td.disabled:hover {
+    color: #d0d0d0!important;
+}
