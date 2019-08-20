@@ -10,8 +10,8 @@
 
 <IfModule mod_rewrite.c>
     RewriteEngine on
-    #RewriteCond %{HTTPS} !=on
-    #RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R=301,L]
+    RewriteCond %{HTTPS} !=on
+    RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R=301,L]
     RewriteRule    ^(\.well-known/.*)$ $1 [L]
     RewriteRule    ^$    webroot/    [L]
     RewriteRule    (.*) webroot/$1    [L]
