@@ -1,0 +1,1 @@
+<?php if(isset($pageTitle)) { if ($childPage) echo $parentPageTitle.' - '; echo $pageTitle; } ?> - <?= $siteName ?><?php if(!empty($tagLine)) echo ' | '.$tagLine ?>

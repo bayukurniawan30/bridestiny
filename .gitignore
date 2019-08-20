@@ -1,7 +1,6 @@
 # CakePHP 3
 
 /vendor/*
-/plugins/EngageTheme
 
 /tmp/cache/models/*
 !/tmp/cache/models/empty
