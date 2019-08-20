@@ -1,21 +1,22 @@
 <?php
-    $replaceFunction = $this->Purple->getAllFuncInHtml($homepage);
-    if ($replaceFunction == false) {
-        echo $homepage;
-    }
-    else {
-        $i = 1;
-        foreach ($replaceFunction as $data):
-            $functionName = trim(str_replace('function|', '', $data));
-            if ($i == 1) {
-                $html = str_replace('{{function|'.$functionName.'}}', $themeFunction->$functionName(), $homepage);
-            }
-            else {
-                $html = str_replace('{{function|'.$functionName.'}}', $themeFunction->$functionName(), $html);
-            }
-            $i++;
-        endforeach;
+    // Element/Home/fullscreen_slideshow.ctp
+    echo $this->element('Home/fullscreen_slideshow'); 
 
-        echo $html;
-    }
+    // Element/Home/latest_offer.ctp
+    echo $this->element('Home/latest_offer'); 
+
+    // Element/Home/branding.ctp
+    echo $this->element('Home/branding');
+    
+    // Element/Home/latest_weddings.ctp
+    echo $this->element('Home/latest_weddings');
+
+    // Element/Home/categories.ctp
+    echo $this->element('Home/categories');
+
+    // Element/Home/latest_posts.ctp
+    echo $this->element('Home/latest_posts');
+
+    // Element/Home/vendors.ctp
+    echo $this->element('Home/vendors');
 ?>

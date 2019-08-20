@@ -46,12 +46,26 @@ class AppController extends Controller
         ]);
         $this->loadComponent('Flash');
 
-        // Timezone
-        $purpleGlobal      = new PurpleProjectGlobal();
-        $productionKeyInfo = $purpleGlobal->productionKeyInfo();
-        if ($productionKeyInfo == 'filled') {
-            $this->loadModel('Settings');
-            $this->set('timeZone', $this->Settings->settingsTimeZone());
+        if ($this->request->getParam('controller') == 'Setup' || $this->request->getParam('controller') == 'Production') {
+
+        }
+        else {
+            // Timezone
+            $purpleGlobal      = new PurpleProjectGlobal();
+            $productionKeyInfo = $purpleGlobal->productionKeyInfo();
+            if ($productionKeyInfo == 'filled') {
+                $session  = $this->getRequest()->getSession();
+
+                $this->loadModel('Settings');
+                $this->set('timeZone', $this->Settings->settingsTimeZone());
+                if (!$session->check('Purple.timezone')) {
+                    $session->write('Purple.timezone', $this->Settings->settingsTimeZone());
+                }
+
+                if (!$session->check('Purple.settingTimezone')) {
+                    $session->write('Purple.settingTimezone', $this->Settings->settingsTimeZone());
+                }
+            }
         }
 
         /*

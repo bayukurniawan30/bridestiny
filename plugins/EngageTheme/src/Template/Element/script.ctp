@@ -1,6 +1,7 @@
 <!-- JavaScript & jQuery Plugins -->
 <!-- Bootstrap -->
 <?= $this->Html->script('bootstrap.min.js'); ?>
+<?= $this->Html->script('popper.min.js'); ?>
 <!-- UI Kit -->
 <?= $this->Html->script('/master-assets/plugins/uikit/js/uikit.js'); ?>
 <?= $this->Html->script('/master-assets/plugins/uikit/js/uikit-icons.js'); ?>
@@ -13,6 +14,15 @@
 <!-- Purple -->
 <?= $this->Html->script('/master-assets/js/ajax-front-end.js'); ?>
 <?= $this->Html->script('/master-assets/js/purple-front-end.js'); ?>
+<!-- Template JS -->
+<?= $this->Html->script('/plugins/cubeportfolio/js/jquery.cubeportfolio.min.js'); ?>
+<?= $this->Html->script('/plugins/select2/js/select2.min.js'); ?>
+<?= $this->Html->script('libs/slick.min.js'); ?>
+<?= $this->Html->script('libs/aos.js'); ?>
+<?= $this->Html->script('header.js'); ?>
+<?= $this->Html->script('content.js'); ?>
+<?= $this->Html->script('brideme.js'); ?>
+
 <script type="text/javascript">
 	$(document).ready(function(){
 		var urlActionContactForm = '<?= $this->Url->build(['_name' => 'ajaxSendContact']) ?>';

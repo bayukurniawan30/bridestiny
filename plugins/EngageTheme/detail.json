@@ -1,5 +1,5 @@
 {
-	"name" : "Engage",
+	"name" : "Bridestiny Template",
 	"author" : "Purple CMS",
 	"image" : "",
 	"preview" : "",
@@ -11,6 +11,6 @@
 	,
 	"globalFunction" : "",
 	"blocks" : "content",
-	"description" : "Default theme for Purple CMS",
+	"description" : "Default theme for Bridestiny",
 	"version" : "1.0"
 }

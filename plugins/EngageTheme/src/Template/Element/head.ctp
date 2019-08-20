@@ -36,23 +36,36 @@
     <link rel="canonical" href="<?= $this->Url->build($this->request->getRequestTarget(), true) ?>">
     
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lobster+Two|Old+Standard+TT" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
     <!-- Font Awesome 4.7 -->
     <?= $this->Html->css('font-awesome.min.css') ?>
 
     <!-- Bootstrap -->
     <?= $this->Html->css('bootstrap.min.css') ?>
+    <!-- Template CSS -->
+    <?= $this->Html->css('libs/slick.css') ?>
+    <?= $this->Html->css('libs/slick-theme.css') ?>
+    <?= $this->Html->css('libs/aos.css') ?>
+    <?= $this->Html->css('/plugins/select2/css/select2.min.css') ?>
     <!-- Froala Blocks -->
     <?= $this->Html->css('/master-assets/plugins/froala-blocks/css/froala_blocks.css') ?>
     <!-- UI Kit -->
     <?= $this->Html->css('/master-assets/plugins/uikit/css/uikit.css') ?>
     <!-- Parsley -->
     <?= $this->Html->css('/master-assets/plugins/parsley/src/parsley.css') ?>
-
+    <!-- Bttn -->
     <?= $this->Html->css('/master-assets/css/bttn.css') ?>
-    <?= $this->Html->css('custom.css') ?>
+    <!-- Template CSS -->
+    <?= $this->Html->css('global.css') ?>
+    <?= $this->Html->css('header-hero.css') ?>
+    <?= $this->Html->css('costum.css') ?>
 
     <?php if ($favicon != ''): ?>
     <!-- Favicon -->
@@ -63,7 +76,8 @@
     <?php endif; ?>
 
     <!-- jQuery -->
-    <?= $this->Html->script('jquery-3.3.1.min.js'); ?>
+    <?= $this->Html->script('https://code.jquery.com/jquery-3.4.1.min.js', ['integrity' => 'sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=', 'crossorigin' => 'anonymous']); ?>
+    <?= $this->Html->script('https://code.jquery.com/ui/1.12.1/jquery-ui.js'); ?>
 
     <?php if ($formSecurity == 'on'): ?>
     <!-- Google reCaptcha -->
@@ -92,6 +106,10 @@
             echo html_entity_decode($articleSchema);
         }
     ?>
+
+    <!-- Bridestiny Plugin -->
+    <?= $this->Html->css('Bridestiny./plugins/intl-tel-input/css/intlTelInput.min.css') ?>
+    <?= $this->Html->script('Bridestiny.front.js'); ?>
 
     <!-- Purple Timezone -->
     <?= $this->Html->script('/master-assets/plugins/moment/moment.js'); ?>
