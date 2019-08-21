@@ -427,7 +427,7 @@ footer {
 .footer-main .rsvp_form input.rsvp_button {
     width: 34px;
     height: 38px;
-    background: url(http://srv1.creativabali.com/brideme/images/footer-rsvp-button.jpg) left top no-repeat;
+    background: url(../img/footer-rsvp-button.jpg) left top no-repeat;
     float: left;
     border: 0;
 }
