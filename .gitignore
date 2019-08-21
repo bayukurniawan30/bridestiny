@@ -23,6 +23,9 @@
 !/logs/empty
 
 /webroot/uploads/documents/*
+/webroot/uploads/images/original/*
+/webroot/uploads/images/thumbnails/300x300/*
+/webroot/uploads/images/thumbnails/480x270/*
 /webroot/uploads/videos/*
 
 # CakePHP 2
