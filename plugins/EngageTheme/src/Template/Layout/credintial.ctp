@@ -11,7 +11,7 @@
         
         <div class="d-flex">
             <div class="form-wrap d-flex">
-                <div class="align-self-center" style="width: 100%">
+                <div class="" style="width: 100%">
                     <div class="form-wrap-inner align-self-center h-100">
                         <a href="<?= $this->Url->build(['_name' => 'home']); ?>" class="logo">
                             <?php

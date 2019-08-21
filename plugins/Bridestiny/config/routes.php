@@ -50,6 +50,10 @@ Router::plugin(
                 ['controller' => 'Vendors', 'action' => 'ajaxVerification'], 
                 ['_name' => $routePrefix . 'VendorAjaxVerification']);
 
+        $routes->connect('/vendor/pending-account', 
+            ['controller' => 'Vendors', 'action' => 'pendingAccount'], 
+            ['_name' => $routePrefix . 'VendorPendingAccount']);
+
         $routes->connect('/vendors',
             ['controller' => 'Vendors', 'action' => 'view'], 
             ['_name' => $routePrefix . 'VendorsView']);

@@ -1,6 +1,6 @@
 <?php
     $submitRedirect = $this->Url->build([
-        '_name'  => $themeFunction->routePrefix() . 'VendorAjaxSignUp'
+        '_name'  => $themeFunction->routePrefix() . 'VendorVerification'
     ]);
 
     $citiesUrl = $this->Url->build([
@@ -27,190 +27,189 @@
 <p class="mb-5">
 Become a member today to get access to your custom profile and<br>our exclusive business insights
 </p>
-    <div class="nano">
-        <div class="nano-content">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="" uk-grid>
-                        <div class="uk-margin-small">
-                            <h5 class="non-uikit text-title text-left">Vendor Information</h5>
-                            <span class="devider-core"></span>
+<div class="nano">
+    <div class="nano-content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="" uk-grid>
+                    <div class="uk-margin-small">
+                        <h5 class="non-uikit text-title text-left">Vendor Information</h5>
+                        <span class="devider-core"></span>
+                    </div>
+                    <div class="uk-margin-small uk-width-1-1">
+                        <label class="uk-form-label" for="form-stacked-name">Vendor Name</label>
+                        <div class="uk-form-controls">
+                            <?php
+                                echo $this->Form->text('name', [
+                                    'id'                     => 'form-stacked-name',
+                                    'class'                  => 'uk-input',
+                                    'placeholder'            => 'Vendor Name',
+                                    'data-parsley-minlength' => '2',
+                                    'data-parsley-maxlength' => '50',
+                                    'autofocus'              => 'autofocus',
+                                    'required'               => 'required'
+                                ]);
+                            ?>
                         </div>
-                        <div class="uk-margin-small uk-width-1-1">
-                            <label class="uk-form-label" for="form-stacked-name">Vendor Name</label>
-                            <div class="uk-form-controls">
+                    </div>
+
+                    <div class="uk-margin-small uk-width-1-1">
+                        <label class="uk-form-label" for="form-stacked-email">Email</label>
+                        <div class="uk-form-controls">
+                            <?php
+                                echo $this->Form->text('email', [
+                                    'type'                   => 'email',
+                                    'id'                     => 'form-stacked-email',
+                                    'class'                  => 'uk-input',
+                                    'placeholder'            => 'Email. E.g. weddingplanner@mail.com ',
+                                    'data-parsley-type'      => 'email',
+                                    'required'               => 'required'
+                                ]);
+                            ?>
+                        </div>
+                    </div>
+
+                    <div class="uk-margin-small uk-width-1-1">
+                        <label class="uk-form-label" for="form-stacked-password">Password</label>
+                        <div class="uk-form-controls">
+                            <?php
+                                echo $this->Form->password('password', [
+                                    'id'                     => 'form-stacked-password',
+                                    'class'                  => 'uk-input', 
+                                    'placeholder'            => 'Password. 6 -20 characters',
+                                    'data-parsley-minlength' => '6',
+                                    'data-parsley-maxlength' => '20',
+                                    'autocomplete' 			 => '',
+                                    'required'               => 'required'
+                                ]);
+                            ?>
+                        </div>
+                    </div>
+
+                    <div class="uk-margin-small uk-width-1-1">
+                        <label class="uk-form-label" for="form-stacked-repeatpassword">Repeat Password</label>
+                        <div class="uk-form-controls">
+                            <?php
+                                echo $this->Form->password('repeatpassword', [
+                                    'id'                     => 'form-stacked-repeatpassword',
+                                    'class'                  => 'uk-input', 
+                                    'placeholder'            => 'Repeat Password',
+                                    'data-parsley-minlength' => '6',
+                                    'data-parsley-maxlength' => '20',
+                                    'autocomplete' 			 => '',
+                                    'data-parsley-equalto'   => '#form-stacked-password',
+                                    'required'               => 'required'
+                                ]);
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 uk-margin-top">
+                <div uk-grid>
+                    <div class="uk-margin-small">
+                        <h5 class="non-uikit text-title text-left">Contact Information</h5>
+                        <span class="devider-core"></span>
+                    </div>
+                    <div class="uk-margin-small uk-width-1-1">
+                        <label class="uk-form-label" for="form-stacked-phone">Mobile Phone Number</label>
+                        <div class="uk-form-controls">
+                            <?php
+                                echo $this->Form->text('phone', [
+                                    'id'                => 'form-stacked-phone',
+                                    'class'             => 'uk-input',
+                                    'data-parsley-type' => 'number',
+                                    'required'          => 'required'
+                                ]);
+                            ?>
+                        </div>
+                    </div>
+
+                    <div class="uk-margin-small uk-width-1-1">
+                        <label class="uk-form-label" for="form-stacked-province">Province</label>
+                        <div class="uk-form-controls">
+                            <?php
+                                echo $this->Form->select(
+                                    'province',
+                                    $rajaongkirProvinces,
+                                    [
+                                        'empty'    => 'Select Province',
+                                        'id'       => 'form-stacked-province',
+                                        'class'    => 'uk-select',
+                                        'required' => 'required',
+                                        'data-purplestore-url'    => $citiesUrl,
+                                        'data-purplestore-target' => '#form-stacked-city'
+                                    ]
+                                );
+                            ?>
+                        </div>
+                    </div>
+
+                    <div class="uk-margin-small uk-width-1-1">
+                        <label class="uk-form-label" for="form-stacked-city">City</label>
+                        <div class="uk-form-controls">
+                            <?php
+                                echo $this->Form->select(
+                                    'city',
+                                    [],
+                                    [
+                                        'empty'    => 'Select City',
+                                        'id'       => 'form-stacked-city',
+                                        'class'    => 'uk-select',
+                                        'required' => 'required'
+                                    ]
+                                );
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 uk-margin-top">
+                <div uk-grid>
+                    <div class="uk-margin-small">
+                        <h5 class="non-uikit text-title text-left">Required Documents</h5>
+                        <span class="devider-core"></span>
+                    </div>
+
+                    <div class="uk-margin-small uk-width-1-1">
+                        <label class="uk-form-label" for="form-stacked-ktp">KTP</label>
+                        <div class="uk-form-controls">
+                            <div class="uk-width-1-1" uk-form-custom="target: true">
                                 <?php
-                                    echo $this->Form->text('name', [
-                                        'id'                     => 'form-stacked-name',
-                                        'class'                  => 'uk-input',
-                                        'placeholder'            => 'Vendor Name',
-                                        'data-parsley-minlength' => '2',
-                                        'data-parsley-maxlength' => '50',
-                                        'autofocus'              => 'autofocus',
-                                        'required'               => 'required'
+                                    echo $this->Form->text('ktp', [
+                                        'type'     => 'file',
+                                        'id'       => 'form-stacked-ktp',
+                                        'required' => 'required'
                                     ]);
                                 ?>
-                            </div>
-                        </div>
-
-                        <div class="uk-margin-small uk-width-1-1">
-                            <label class="uk-form-label" for="form-stacked-email">Email</label>
-                            <div class="uk-form-controls">
                                 <?php
-                                    echo $this->Form->text('email', [
-                                        'type'                   => 'email',
-                                        'id'                     => 'form-stacked-email',
-                                        'class'                  => 'uk-input',
-                                        'placeholder'            => 'Email. E.g. weddingplanner@mail.com ',
-                                        'data-parsley-type'      => 'email',
-                                        'required'               => 'required'
-                                    ]);
-                                ?>
-                            </div>
-                        </div>
-
-                        <div class="uk-margin-small uk-width-1-1">
-                            <label class="uk-form-label" for="form-stacked-password">Password</label>
-                            <div class="uk-form-controls">
-                                <?php
-                                    echo $this->Form->password('password', [
-                                        'id'                     => 'form-stacked-password',
-                                        'class'                  => 'uk-input', 
-                                        'placeholder'            => 'Password. 6 -20 characters',
-                                        'data-parsley-minlength' => '6',
-                                        'data-parsley-maxlength' => '20',
-                                        'autocomplete' 			 => '',
-                                        'required'               => 'required'
-                                    ]);
-                                ?>
-                            </div>
-                        </div>
-
-                        <div class="uk-margin-small uk-width-1-1">
-                            <label class="uk-form-label" for="form-stacked-repeatpassword">Repeat Password</label>
-                            <div class="uk-form-controls">
-                                <?php
-                                    echo $this->Form->password('repeatpassword', [
-                                        'id'                     => 'form-stacked-repeatpassword',
-                                        'class'                  => 'uk-input', 
-                                        'placeholder'            => 'Repeat Password',
-                                        'data-parsley-minlength' => '6',
-                                        'data-parsley-maxlength' => '20',
-                                        'autocomplete' 			 => '',
-                                        'data-parsley-equalto'   => '#form-stacked-password',
-                                        'required'               => 'required'
+                                    echo $this->Form->text('', [
+                                        'class'       => 'uk-input',
+                                        'placeholder' => 'Select file',
+                                        'disabled'    => 'disabled'
                                     ]);
                                 ?>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-12 uk-margin-top">
-                    <div uk-grid>
-                        <div class="uk-margin-small">
-                            <h5 class="non-uikit text-title text-left">Contact Information</h5>
-                            <span class="devider-core"></span>
-                        </div>
-                        <div class="uk-margin-small uk-width-1-1">
-                            <label class="uk-form-label" for="form-stacked-phone">Mobile Phone Number</label>
-                            <div class="uk-form-controls">
+                    <div class="uk-margin-small uk-width-1-1">
+                        <label class="uk-form-label" for="form-stacked-npwp">NPWP</label>
+                        <div class="uk-form-controls">
+                            <div class="uk-width-1-1" uk-form-custom="target: true">
                                 <?php
-                                    echo $this->Form->text('phone', [
-                                        'id'                => 'form-stacked-phone',
-                                        'class'             => 'uk-input',
-                                        'data-parsley-type' => 'number',
-                                        'required'          => 'required'
+                                    echo $this->Form->text('npwp', [
+                                        'type'     => 'file',
+                                        'id'       => 'form-stacked-npwp',
+                                        'required' => 'required'
                                     ]);
                                 ?>
-                            </div>
-                        </div>
-
-                        <div class="uk-margin-small uk-width-1-1">
-                            <label class="uk-form-label" for="form-stacked-province">Province</label>
-                            <div class="uk-form-controls">
                                 <?php
-                                    echo $this->Form->select(
-                                        'province',
-                                        $rajaongkirProvinces,
-                                        [
-                                            'empty'    => 'Select Province',
-                                            'id'       => 'form-stacked-province',
-                                            'class'    => 'uk-select',
-                                            'required' => 'required',
-                                            'data-purplestore-url'    => $citiesUrl,
-                                            'data-purplestore-target' => '#form-stacked-city'
-                                        ]
-                                    );
+                                    echo $this->Form->text('', [
+                                        'class'       => 'uk-input',
+                                        'placeholder' => 'Select file',
+                                        'disabled'    => 'disabled'
+                                    ]);
                                 ?>
-                            </div>
-                        </div>
-
-                        <div class="uk-margin-small uk-width-1-1">
-                            <label class="uk-form-label" for="form-stacked-city">City</label>
-                            <div class="uk-form-controls">
-                                <?php
-                                    echo $this->Form->select(
-                                        'city',
-                                        [],
-                                        [
-                                            'empty'    => 'Select City',
-                                            'id'       => 'form-stacked-city',
-                                            'class'    => 'uk-select',
-                                            'required' => 'required'
-                                        ]
-                                    );
-                                ?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12 uk-margin-top">
-                    <div uk-grid>
-                        <div class="uk-margin-small">
-                            <h5 class="non-uikit text-title text-left">Required Documents</h5>
-                            <span class="devider-core"></span>
-                        </div>
-
-                        <div class="uk-margin-small uk-width-1-1">
-                            <label class="uk-form-label" for="form-stacked-ktp">KTP</label>
-                            <div class="uk-form-controls">
-                                <div class="uk-width-1-1" uk-form-custom="target: true">
-                                    <?php
-                                        echo $this->Form->text('ktp', [
-                                            'type'     => 'file',
-                                            'id'       => 'form-stacked-ktp',
-                                            'required' => 'required'
-                                        ]);
-                                    ?>
-                                    <?php
-                                        echo $this->Form->text('', [
-                                            'class'       => 'uk-input',
-                                            'placeholder' => 'Select file',
-                                            'disabled'    => 'disabled'
-                                        ]);
-                                    ?>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="uk-margin-small uk-width-1-1">
-                            <label class="uk-form-label" for="form-stacked-npwp">NPWP</label>
-                            <div class="uk-form-controls">
-                                <div class="uk-width-1-1" uk-form-custom="target: true">
-                                    <?php
-                                        echo $this->Form->text('npwp', [
-                                            'type'     => 'file',
-                                            'id'       => 'form-stacked-npwp',
-                                            'required' => 'required'
-                                        ]);
-                                    ?>
-                                    <?php
-                                        echo $this->Form->text('', [
-                                            'class'       => 'uk-input',
-                                            'placeholder' => 'Select file',
-                                            'disabled'    => 'disabled'
-                                        ]);
-                                    ?>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -218,24 +217,25 @@ Become a member today to get access to your custom profile and<br>our exclusive 
             </div>
         </div>
     </div>
+</div>
 
-    <div class="row">
-        <div class="col-md-12 uk-margin-top">
-            <div id="error-result"></div>
-        </div>
+<div class="row">
+    <div class="col-md-12 uk-margin-top">
+        <div id="error-result"></div>
     </div>
+</div>
 
-    <div class="row">
-        <div class="col-md-8 offset-md-2 uk-margin-large-top">
-            <?php
-                echo $this->Form->button('Sign up', [
-                    'id'    => 'button-sign-up',
-                    'class' => 'btn btn-primary btn-block'
-                ]);
-            ?>
-            <p class="text-center"><a class="non-uikit" href="<?= $signInUrl ?>">Already have account? Sign In</a></p>
-        </div>
+<div class="row">
+    <div class="col-md-8 offset-md-2 uk-margin-large-top">
+        <?php
+            echo $this->Form->button('Sign up', [
+                'id'    => 'button-sign-up',
+                'class' => 'btn btn-primary btn-block'
+            ]);
+        ?>
+        <p class="text-center"><a class="non-uikit" href="<?= $signInUrl ?>">Already have account? Sign In</a></p>
     </div>
+</div>
 <?php
     echo $this->Form->end();
 ?>
@@ -277,7 +277,7 @@ Become a member today to get access to your custom profile and<br>our exclusive 
 <script>
     $(document).ready(function() {
         var t = "form-sign-up",
-            n = "PurpleStore.signUp",
+            n = "Bridestiny.signUp",
             o = "redirect",
             a = "<?= $submitRedirect ?>",
             c = "Sign up",

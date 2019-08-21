@@ -54,7 +54,7 @@ class VendorsController extends AppController
     public function beforeRender(\Cake\Event\Event $event)
     {
         $this->viewBuilder()->setTheme('EngageTheme');
-        $credintialAction = ['signUp', 'signIn'];
+        $credintialAction = ['signUp', 'signIn', 'verification', 'pendingAccount'];
         if (!in_array($this->request->getParam('action'), $credintialAction)) {
             $this->viewBuilder()->setLayout('EngageTheme.default');
         }
@@ -316,10 +316,26 @@ class VendorsController extends AppController
 
         $vendorCodeVerification = new VendorCodeVerificationForm();
 
+        $session         = $this->getRequest()->getSession();
+        $sessionCode     = $session->read('Bridestiny.verificationcode');
+
         $data = [
             'breadcrumb'             => 'Home::Vendor::Verification',
             'vendorCodeVerification' => $vendorCodeVerification,
+            'sessionCode' => $sessionCode
         ];
+
+        $this->set($data);
+    }
+    public function pendingAccount()
+    {
+        $this->viewBuilder()->setLayout('EngageTheme.credintial');
+
+        $data = [
+            'breadcrumb' => 'Home::Vendor::Pending Account',
+        ];
+
+        $this->set($data);
     }
     public function signOut()
     {
@@ -386,7 +402,7 @@ class VendorsController extends AppController
                             $key    = $hasher->hash('public-purple is awesome');
                             $userData      = array(
                                 'sitename'    => $this->Settings->settingsSiteName(),
-                                'email'       => $customer->email,
+                                'email'       => $vendor->email,
                                 'code'        => $code
                             );
 
@@ -412,7 +428,7 @@ class VendorsController extends AppController
                                 'domain' => $this->request->domain()
                             );
                             $bridestinyApi = new BridestinyApi();
-                            $notifyUser    = $bridestinyApi->sendEmailCustomerVerification($key, json_encode($userData), json_encode($siteData), json_encode($senderData));
+                            $notifyUser    = $bridestinyApi->sendEmailVendorVerification($key, json_encode($userData), json_encode($siteData), json_encode($senderData));
 
                             if ($notifyUser == true) {
                                 $emailNotification = true;
@@ -447,5 +463,41 @@ class VendorsController extends AppController
     	else {
 	        throw new NotFoundException(__('Page not found'));
 	    }
+    }
+    public function ajaxVerification()
+    {
+        $this->viewBuilder()->enableAutoLayout(false);
+
+        $vendorCodeVerification = new VendorCodeVerificationForm();
+        if ($this->request->is('ajax') || $this->request->is('post')) {
+            if ($vendorCodeVerification->execute($this->request->getData())) {
+                $code = trim($this->request->getData('code'));
+                $session         = $this->getRequest()->getSession();
+                $sessionCode     = $session->read('Bridestiny.verificationcode');
+                $sessionVendorId = $session->read('Bridestiny.vendorId');
+
+                if ($code == $sessionCode) {
+                    $vendor = $this->BrideVendors->get($sessionVendorId);
+					$vendor->status = '1';
+					if ($this->BrideVendors->save($vendor)) {
+                        $json = json_encode(['status' => 'ok']);
+                    }
+                    else {
+                        $json = json_encode(['status' => 'error', 'error' => "Can't process your account. Please try again."]);
+                    }
+                }
+                else {
+                    $json = json_encode(['status' => 'error', 'error' => 'Wrong verification code.']);
+                }
+            }
+            else {
+                $errors = $vendorCodeVerification->errors();
+                $json = json_encode(['status' => 'error', 'error' => $errors, 'error_type' => 'form']);
+            }
+            $this->set(['json' => $json]);
+        }
+        else {
+            throw new NotFoundException(__('Page not found'));
+        }
     }
 }

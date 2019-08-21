@@ -1,5 +1,5 @@
 <?php
-namespace Bridestiny\Form\Purple;
+namespace Bridestiny\Form;
 
 use Cake\Form\Form;
 use Cake\Form\Schema;
