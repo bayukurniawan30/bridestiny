@@ -1,3 +1,12 @@
+<?php
+    $signUpVendorUrl = $this->Url->build([
+        '_name'  => $themeFunction->routePrefix() . 'VendorSignUp'
+    ]);
+
+    $signUpCustomerUrl = $this->Url->build([
+        '_name'  => $themeFunction->routePrefix() . 'CustomerSignUp'
+    ]);
+?>
 <div id="modal-brideme-login" class="uk-flex-top" uk-modal>
     <div class="uk-modal-dialog uk-margin-auto-vertical uk-modal-body uk-padding-remove">
         <button class="uk-modal-close-outside" type="button" uk-close></button>
@@ -30,7 +39,7 @@
                                     <button class="uk-button button-vendor-login uk-width-1-1" type="submit">Login <i class="fa fa-angle-right"></i></button>
                                 </div>
                                 <div class="uk-margin text-center">
-                                    <a href="#" class="non-uikit create-new-account-link">Or create new account</a>
+                                    <a href="<?= $signUpCustomerUrl ?>" onclick="window.location.href='<?= $signUpCustomerUrl ?>'" class="non-uikit create-new-account-link">Or create new account</a>
                                 </div>
                             </fieldset>
                         </form>
@@ -59,7 +68,7 @@
                                     <button class="uk-button button-vendor-login uk-width-1-1"  type="submit">Login <i class="fa fa-angle-right"></i></button>
                                 </div>
                                 <div class="uk-margin text-center">
-                                    <a href="#" class="non-uikit create-new-account-link">Or create new account</a>
+                                    <a href="<?= $signUpVendorUrl ?>" onclick="window.location.href='<?= $signUpVendorUrl ?>'" class="non-uikit create-new-account-link">Or create new account</a>
                                 </div>
                             </fieldset>
                         </form>

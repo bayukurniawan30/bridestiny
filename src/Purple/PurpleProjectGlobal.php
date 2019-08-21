@@ -10,6 +10,8 @@ use Carbon\Carbon;
 
 class PurpleProjectGlobal 
 {
+	public $apiDomain = 'https://api.bridestiny.com';
+
 	public function databaseInfo() 
 	{
 		$key     = CIPHER;

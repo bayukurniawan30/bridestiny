@@ -27,13 +27,28 @@ Router::plugin(
             ['controller' => 'Vendors', 'action' => 'signUp'], 
             ['_name' => $routePrefix . 'VendorSignUp']);
 
+            // Process
+            $routes->connect('/vendor/ajax-sign-up', 
+                ['controller' => 'Vendors', 'action' => 'ajaxSignUp'], 
+                ['_name' => $routePrefix . 'VendorAjaxSignUp']);
+
         $routes->connect('/vendor/sign-in', 
             ['controller' => 'Vendors', 'action' => 'signIn'], 
             ['_name' => $routePrefix . 'VendorSignIn']);
 
+            // Process
+            $routes->connect('/vendor/ajax-sign-in', 
+                ['controller' => 'Vendors', 'action' => 'ajaxSignIn'], 
+                ['_name' => $routePrefix . 'VendorAjaxSignIn']);
+
         $routes->connect('/vendor/verification',
             ['controller' => 'Vendors', 'action' => 'verification'], 
             ['_name' => $routePrefix . 'VendorVerification']);
+
+            // Process
+            $routes->connect('/vendor/ajax-verification', 
+                ['controller' => 'Vendors', 'action' => 'ajaxVerification'], 
+                ['_name' => $routePrefix . 'VendorAjaxVerification']);
 
         $routes->connect('/vendors',
             ['controller' => 'Vendors', 'action' => 'view'], 

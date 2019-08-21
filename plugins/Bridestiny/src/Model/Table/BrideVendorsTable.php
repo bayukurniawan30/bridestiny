@@ -4,7 +4,10 @@ namespace Bridestiny\Model\Table;
 
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
+use Cake\Auth\DefaultPasswordHasher;
+use Cake\Utility\Text;
 use Cake\Http\ServerRequest;
+use Cake\Utility\Security;
 use App\Purple\PurpleProjectSettings;
 use Carbon\Carbon;
 
@@ -55,7 +58,20 @@ class BrideVendorsTable extends Table
 		$entity->name = ucwords(trim($entity->name));
 
 		if ($entity->isNew()) {
-			$entity->created  = $date;
+               $entity->created  = $date;
+
+               $sluggedTitle = Text::slug(strtolower($entity->name));
+               // trim slug to maximum length defined in schema
+               $entity->user_id = substr($sluggedTitle, 0, 191);
+               
+               $hasher = new DefaultPasswordHasher();
+
+               // Generate an API 'token'
+               $entity->api_key_plain = Security::hash(Security::randomBytes(32), 'sha256', false);
+
+               // Bcrypt the token so BasicAuthenticate can check
+               // it during login.
+               $entity->api_key = $hasher->hash($entity->api_key_plain);
         }
 		else {
 			$entity->modified = $date;

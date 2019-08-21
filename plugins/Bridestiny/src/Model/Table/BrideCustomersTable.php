@@ -4,7 +4,9 @@ namespace Bridestiny\Model\Table;
 
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
+use Cake\Auth\DefaultPasswordHasher;
 use Cake\Http\ServerRequest;
+use Cake\Utility\Security;
 use App\Purple\PurpleProjectSettings;
 use Carbon\Carbon;
 
@@ -49,7 +51,16 @@ class BrideCustomersTable extends Table
 
 		if ($entity->isNew()) {
 			$entity->created  = $date;
-			$entity->status   = '0';
+               $entity->status   = '0';
+               
+               $hasher = new DefaultPasswordHasher();
+
+               // Generate an API 'token'
+               $entity->api_key_plain = Security::hash(Security::randomBytes(32), 'sha256', false);
+
+               // Bcrypt the token so BasicAuthenticate can check
+               // it during login.
+               $entity->api_key = $hasher->hash($entity->api_key_plain);
         }
 		else {
 			$entity->modified = $date;

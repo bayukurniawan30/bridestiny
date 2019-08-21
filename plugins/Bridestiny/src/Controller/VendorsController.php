@@ -7,17 +7,25 @@ use Cake\Event\Event;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\View\Exception\MissingTemplateException;
+use Cake\Auth\DefaultPasswordHasher;
+use Cake\Utility\Text;
+use Cake\Filesystem\File;
 use App\Purple\PurpleProjectGlobal;
 use App\Purple\PurpleProjectSeo;
 use App\Purple\PurpleProjectSettings;
 use App\Purple\PurpleProjectApi;
+use Bridestiny\Api\BridestinyApi;
 use App\Form\SearchForm;
 use Bridestiny\Form\VendorSignInForm;
 use Bridestiny\Form\VendorSignUpForm;
+use Bridestiny\Form\VendorCodeVerificationForm;
 use Carbon\Carbon;
 use Melbahja\Seo\Factory;
 use EngageTheme\Functions\ThemeFunction;
 use Bridestiny\Functions\GlobalFunctions;
+use Bulletproof;
+use Gregwar\Image\Image;
+use \Gumlet\ImageResize;
 
 class VendorsController extends AppController
 {
@@ -46,7 +54,10 @@ class VendorsController extends AppController
     public function beforeRender(\Cake\Event\Event $event)
     {
         $this->viewBuilder()->setTheme('EngageTheme');
-        $this->viewBuilder()->setLayout('EngageTheme.default');
+        $credintialAction = ['signUp', 'signIn'];
+        if (!in_array($this->request->getParam('action'), $credintialAction)) {
+            $this->viewBuilder()->setLayout('EngageTheme.default');
+        }
     }
     public function initialize()
     {
@@ -59,6 +70,10 @@ class VendorsController extends AppController
         $this->loadModel('Menus');
         $this->loadModel('Visitors');
         $this->loadModel('Socials');
+
+        $this->loadModel('Bridestiny.BrideVendors');
+        $this->loadModel('Bridestiny.BrideVendorMedias');
+        $this->loadModel('Bridestiny.BrideSettings');
 
         $purpleSettings = new PurpleProjectSettings();
         $timezone       = $purpleSettings->timezone();
@@ -186,8 +201,80 @@ class VendorsController extends AppController
         ];
         $this->set($data);
     }
+    public function uploadImages($file, $id = 1)
+	{
+        if (!empty($file)) {
+            $purpleSettings = new PurpleProjectSettings();
+            $timezone       = $purpleSettings->timezone();
+            $date           = Carbon::now($timezone);
+
+            $uploadPath = TMP . 'uploads' . DS . 'images' . DS;
+            $fileName   = $file['name'];
+
+            $image = new Bulletproof\Image($file);
+            $newName         = Text::slug($fileName, ['preserve' => '.']);
+            $explodeNewName  = explode(".", $newName);
+            $fileExtension   = end($explodeNewName);
+            $fileOnlyName    = str_replace('.'.$fileExtension, '', $newName);
+            $dateSlug        = Text::slug($date);
+            $generatedName   = $fileOnlyName . '_' . $dateSlug . '.' . $fileExtension;
+
+            $image->setName($generatedName)
+                    ->setMime(array('jpeg', 'jpg', 'png'))
+                    ->setSize(100, 3145728)
+                    ->setLocation($uploadPath);
+            if ($image->upload()) {
+                $fullSizeImage              = WWW_ROOT . 'uploads' . DS .'images' . DS .'original' . DS;
+                $uploadedThumbnailSquare    = WWW_ROOT . 'uploads' . DS .'images' . DS .'thumbnails' . DS . '300x300' . DS;
+                $uploadedThumbnailLandscape = WWW_ROOT . 'uploads' . DS .'images' . DS .'thumbnails' . DS . '480x270' . DS;
+                if (file_exists($image->getFullPath())) {
+                    $readImageFile   = new File($image->getFullPath());
+                    $imageSize       = $readImageFile->size();
+                    
+                    $fullSize = Image::open($image->getFullPath())->save($fullSizeImage . $generatedName, 'guess', 90);
+                    
+                    $thumbnailSquare = Image::open($image->getFullPath())
+                                        ->zoomCrop(300, 300)
+                                        ->save($uploadedThumbnailSquare . $generatedName, 'guess', 90);
+                   
+                    $thumbnailLandscape = Image::open($image->getFullPath())
+                                        ->zoomCrop(480, 270)
+                                        ->save($uploadedThumbnailLandscape . $generatedName, 'guess', 90);
+
+                    $media = $this->BrideVendorMedias->newEntity();
+
+                    $media->name      = $generatedName;
+                    $media->type      = 'image';
+                    $media->title     = $fileOnlyName;
+                    $media->size      = $imageSize;
+                    $media->vendor_id = $id;
+
+                    if ($this->BrideVendorMedias->save($media)) {
+                        $readImageFile   = new File($image->getFullPath());
+                        $deleteImage     = $readImageFile->delete();
+
+                        return $generatedName;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+                else {
+                    return false;
+                }
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+	}
     public function signUp()
     {
+        $this->viewBuilder()->setLayout('EngageTheme.credintial');
+
         $vendorSignUp = new VendorSignUpForm();
 
         $provincesArray = NULL;
@@ -222,5 +309,143 @@ class VendorsController extends AppController
         if ($this->request->is('ajax') || $this->request->is('post')) {
 
         }
+    }
+    public function verification()
+    {
+        $this->viewBuilder()->setLayout('EngageTheme.credintial');
+
+        $vendorCodeVerification = new VendorCodeVerificationForm();
+
+        $data = [
+            'breadcrumb'             => 'Home::Vendor::Verification',
+            'vendorCodeVerification' => $vendorCodeVerification,
+        ];
+    }
+    public function signOut()
+    {
+        $session = $this->getRequest()->getSession();
+        if ($this->request->getEnv('HTTP_HOST') == $session->read('Bridestiny.host')) {
+            $session->delete('Bridestiny.host');
+            $session->delete('Bridestiny.vendorId');
+            $session->delete('Bridestiny.vendorPassword');
+
+            return $this->redirect(
+                ['controller' => 'Pages', 'action' => 'home', 'plugin' => false]
+            );
+        }
+    }
+    public function ajaxSignUp()
+    {
+        $this->viewBuilder()->enableAutoLayout(false);
+
+        $vendorSignUp = new VendorSignUpForm();
+        if ($this->request->is('ajax') || $this->request->is('post')) {
+			if ($vendorSignUp->execute($this->request->getData())) {
+                $session   = $this->getRequest()->getSession();
+
+                $find = $this->BrideVendors->find()->where(['email' => trim($this->request->getData('email'))]);
+                if ($find->count() > 0) {
+                    $json = json_encode(['status' => 'error', 'error' => "Email is already used. Please use another email."]);
+                }
+                else {
+                    $purpleApi = new PurpleProjectApi();
+                    $verifyEmail = $purpleApi->verifyEmail($this->request->getData('email'));
+
+                    if ($verifyEmail == true) {
+
+                        // Generate 6 digits code
+                        $code = rand(100000, 999999);
+
+                        $vendor = $this->BrideVendors->newEntity();
+                        $vendor = $this->BrideVendors->patchEntity($vendor, $this->request->getData());
+                        $vendor->ktp  = 'uploading';
+                        $vendor->npwp = 'uploading'; 
+                        if ($this->request->getData('country') != 'Indonesia') {
+                            $vendor->province = 'none';
+                            $vendor->city     = 'none';
+                        }
+                        $vendor->status = '0';
+
+                        if ($this->BrideVendors->save($vendor)) {
+                            $recordId = $vendor->id;
+
+                            $vendor = $this->BrideVendors->get($recordId);
+                            $uploadKtp  = $this->uploadImages($this->request->getData('ktp'), $recordId);
+                            $uploadNpwp = $this->uploadImages($this->request->getData('npwp'), $recordId);
+
+                            if ($uploadKtp != false && $uploadNpwp != false) {
+                                $vendor->ktp  = $uploadKtp;
+                                $vendor->npwp = $uploadNpwp;
+                            }
+
+                            $session->write('Bridestiny.verificationcode', $code);
+                            $session->write('Bridestiny.vendorId', $recordId);
+
+                            // Send Email to User to Notify user
+                            $hasher = new DefaultPasswordHasher();
+                            $key    = $hasher->hash('public-purple is awesome');
+                            $userData      = array(
+                                'sitename'    => $this->Settings->settingsSiteName(),
+                                'email'       => $customer->email,
+                                'code'        => $code
+                            );
+
+                            $purpleGlobal = new PurpleProjectGlobal();
+                            $protocol     = $purpleGlobal->protocol();
+                            
+                            if ($this->Settings->settingsLogo() == '') {
+                                $siteLogo = $protocol.$this->request->env('HTTP_HOST').$this->request->getAttribute('webroot').'master-assets/img/logo.svg';
+                            }
+                            else {
+                                $siteLogo = $protocol.$this->request->env('HTTP_HOST').$this->request->getAttribute('webroot').'uploads/images/original/'.$this->Settings->settingsLogo();
+                            }
+
+                            $siteData = array(
+                                'siteLogo'    => $siteLogo,
+                                'siteName'    => $this->Settings->settingsSiteName(),
+                                'siteTagline' => $this->Settings->settingsTagLine(),
+                                'siteEmail'   => $this->Settings->settingsEmail(),
+                                'siteAddress' => $this->Settings->settingsPhone(),
+                                'sitePhone'   => $this->Settings->settingsAddress(),
+                            );
+                            $senderData   = array(
+                                'domain' => $this->request->domain()
+                            );
+                            $bridestinyApi = new BridestinyApi();
+                            $notifyUser    = $bridestinyApi->sendEmailCustomerVerification($key, json_encode($userData), json_encode($siteData), json_encode($senderData));
+
+                            if ($notifyUser == true) {
+                                $emailNotification = true;
+                            }
+                            else {
+                                $emailNotification = false;
+                            }
+
+                            /**
+                             * Create notification to system
+                             * array $options => title, detail
+                             */
+
+                            $json = json_encode(['status' => 'ok', 'notification' => false, 'email' => $emailNotification]);
+                        }
+                        else {
+                            $json = json_encode(['status' => 'error', 'error' => "Can't save data. Please try again."]);
+                        }
+                    }
+                    else {
+                        $json = json_encode(['status' => 'error', 'error' => "Email is not valid. Please use a real email."]);
+                    }
+                }
+            }
+			else {
+				$errors = $vendorSignUp->errors();
+                $json = json_encode(['status' => 'error', 'error' => $errors]);
+			}
+
+			$this->set(['json' => $json]);
+		}
+    	else {
+	        throw new NotFoundException(__('Page not found'));
+	    }
     }
 }

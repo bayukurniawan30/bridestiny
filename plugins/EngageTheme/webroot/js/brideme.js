@@ -1,8 +1,4 @@
 $(document).ready(function(){
-	
-	
-	
-	
     $('.link-to-modal-brideme-login').on('click', function() {
         var element  = $(this),
             type     = element.attr('data-brideme-type'),

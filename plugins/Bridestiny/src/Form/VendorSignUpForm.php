@@ -78,10 +78,10 @@ class VendorSignUpForm extends Form
                     ]])
                   ->notEmpty('ktp', 'KTP is required')
                   ->requirePresence([
-                    'NPWP' => [
+                    'npwp' => [
                         'message' => 'NPWP is required',
                     ]])
-                  ->notEmpty('ktp', 'NPWP is required')
+                  ->notEmpty('npwp', 'NPWP is required')
                   ->allowEmpty('photo');
 
         return $validator;
