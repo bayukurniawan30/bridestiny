@@ -206,3 +206,5 @@ Type::build('timestamp')
 
 
 Plugin::load('EngageTheme', ['bootstrap' => true, 'routes' => true]);
+
+Plugin::load('Bridestiny', ['bootstrap' => false, 'routes' => true]);
