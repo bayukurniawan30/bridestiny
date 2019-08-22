@@ -57,10 +57,6 @@ Router::plugin(
         $routes->connect('/vendors',
             ['controller' => 'Vendors', 'action' => 'view'], 
             ['_name' => $routePrefix . 'VendorsView']);
-
-        $routes->connect('/vendor/profile', 
-            ['controller' => 'Vendors', 'action' => 'profile'], 
-            ['_name' => $routePrefix . 'VendorProfile']);
         
         $routes->connect('/vendors/category/:category',
             ['controller' => 'Vendors', 'action' => 'viewByCategory'], 
@@ -199,6 +195,12 @@ Router::plugin(
 			['_name' => $routePrefix . 'VendorViewDetail'])
             ->setPatterns(['id' => '\d+'])
             ->setPass(['id']);
+
+        $routes->connect('/vendors/detail/:id/:page', 
+			['prefix' => 'purple', 'controller' => 'Vendors', 'action' => 'detailPage'], 
+			['_name' => $routePrefix . 'VendorViewDetailPage'])
+            ->setPatterns(['id' => '\d+'])
+            ->setPass(['id', 'page']);
 
         /**
          * Categories Route

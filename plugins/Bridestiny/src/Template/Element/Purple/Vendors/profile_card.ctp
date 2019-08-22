@@ -1,3 +1,8 @@
+<?php
+    $province = $this->cell('Bridestiny.Vendors::getProvinceName', [$vendor->province]);
+    $city     = $this->cell('Bridestiny.Vendors::getCityName', [$vendor->city]);
+?>
+
 <div class="uk-card uk-card-default">
     <?php if ($vendor->banner !== NULL): ?>
     <div class="uk-card-media-top">
@@ -14,16 +19,24 @@
                 <?php endif; ?>
             </div>
             <div class="uk-width-expand">
-                <h3 class="uk-card-title uk-margin-remove-bottom"><?= $vendor->name ?></h3>
+                <h5 class="uk-card-title uk-margin-remove-bottom"><?= $vendor->name ?></h5>
                 <p class="uk-text-meta uk-margin-remove-top"><time><?= $vendor->text_status ?></time></p>
             </div>
         </div>
     </div>
     <div class="uk-card-body">
-        <h5 class="uk-card-title product-card-title"><a href="#"><?= $vendor->name ?></a></h5>
+        <ul class="uk-list uk-list-divider">
+            <li><?= $vendor->email ?></li>
+            <li><?= $vendor->mobile_phone ?></li>
+            <li><?= $city ?> - <?= $province ?></li>
+        </ul>
         
     </div>
     <div class="uk-card-footer">
-        <a href="#">Edit Product</a>
+        
+        <div uk-grid>
+            <div class="uk-width-1-2"><a href="mailto:<?= $vendor->email ?>"><span class="uk-margin-small-right" uk-icon="icon: mail"></span> Email</a></div>
+            <div class="uk-width-1-2 text-right"><a href="tel:<?= $vendor->mobile_phone ?>"><span class="uk-margin-small-right" uk-icon="icon: receiver"></span> Call</a></div>
+        </div>
     </div>
 </div>

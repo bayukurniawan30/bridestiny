@@ -190,4 +190,34 @@ class VendorsController extends AppController
             throw new NotFoundException(__('Page not found'));
         }
     }
+    public function detailPage($id, $page)
+    {
+        $vendors = $this->BrideVendors->find('all')->where(['id' => $id])->limit(1);
+        if ($vendors->count() > 0) {
+            $vendor = $vendors->first();
+            $this->set('vendor', $vendor);
+
+            $availablePage = ['documents', 'about', 'portfolios', 'faqs', 'products'];
+
+            if (in_array($page, $availablePage)) {
+                if ($page == 'documents') {
+                    $ktp  = $this->BrideVendorMedias->find()->where(['name' => $vendor->ktp, 'vendor_id' => $vendor->id])->limit(1)->first();
+                    $npwp = $this->BrideVendorMedias->find()->where(['name' => $vendor->npwp, 'vendor_id' => $vendor->id])->limit(1)->first();
+                    
+                    $data = [
+                        'ktp'  => $ktp,
+                        'npwp' => $npwp
+                    ];
+
+                    $this->set($data);
+                }
+            }
+            else {
+                throw new NotFoundException(__('Page not found'));
+            }
+        }
+        else {
+            throw new NotFoundException(__('Page not found'));
+        }
+    }
 }

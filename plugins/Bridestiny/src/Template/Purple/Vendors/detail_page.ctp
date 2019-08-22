@@ -40,28 +40,26 @@
     <div class="col-md-8 grid-margin">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title uk-margin-remove-bottom">Profile</h4>
+                <h4 class="card-title uk-margin-remove-bottom">Documents</h4>
             </div>
             <div class="card-body">
-                <dl class="uk-description-list uk-description-list-divider">
-                    <dt class="uk-margin-small-bottom"><strong>Vendor Name</strong></dt>
-                    <dd><?= $vendor->name ?></dd>
+                <?php
+                    $ktpImage = $this->request->getAttribute("webroot") . 'uploads/images/original/' . $ktp->name;
+                    $npwpImage = $this->request->getAttribute("webroot") . 'uploads/images/original/' . $npwp->name;
 
-                    <dt class="uk-margin-small-bottom"><strong>Email</strong></dt>
-                    <dd><?= $vendor->email ?></dd>
-
-                    <dt class="uk-margin-small-bottom"><strong>Phone</strong></dt>
-                    <dd><?= $vendor->mobile_phone ?></dd>
-
-                    <dt class="uk-margin-small-bottom"><strong>Registered Date</strong></dt>
-                    <dd><?= date($settingsDateFormat.' '.$settingsTimeFormat, strtotime($vendor->created)) ?></dd>
-
-                    <dt class="uk-margin-small-bottom"><strong>Location</strong></dt>
-                    <dd><?= $city ?> - <?= $province ?></dd>
-
-                    <dt class="uk-margin-small-bottom"><strong>Vendor URL</strong></dt>
-                    <dd><a href="<?= $vendorUrl ?>" target="_blank"><?= $vendorUrl ?></a></dd>
-                </dl>
+                ?>
+                <div uk-grid>
+                    <div>
+                        <div uk-lightbox>
+                            <a class="uk-button uk-button-default" href="<?= $ktpImage ?>" data-alt="KTP" data-caption="KTP - <?= $vendor->name ?>">Open KTP</a>
+                        </div>    
+                    </div>
+                    <div>
+                        <div uk-lightbox>
+                            <a class="uk-button uk-button-default" href="<?= $npwpImage ?>" data-alt="NPWP" data-caption="NPWP - <?= $vendor->name ?>">Open NPWP</a>
+                        </div>    
+                    </div>
+                </div>
             </div>
         </div>
     </div>
