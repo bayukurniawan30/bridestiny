@@ -21,6 +21,14 @@ class BrideCustomer extends Entity
             return 'Publish';
         }
     }
+    protected function _getFullName()
+    {
+        return ucwords($this->first_name . ' ' . $this->last_name);
+    }
+    protected function _getMobilePhone()
+    {
+        return '+' . $this->calling_code . $this->phone;
+    }
     protected function _getCreated($created)
     {
         $serverRequest   = new ServerRequest();

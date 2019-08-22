@@ -14,11 +14,29 @@ class BrideNotification extends Entity
 	];
     protected function _getTextStatus()
     {
-        if ($this->status == '0') {
-            return 'Draft';
+        if ($this->is_read == '0') {
+            return 'Unread';
         }
-        elseif ($this->status == '1') {
-            return 'Publish';
+        elseif ($this->is_read == '1') {
+            return 'Read';
+        }
+    }
+    protected function _getLinkFromType()
+    {
+        if ($this->type == 'Vendors.new') {
+            return 'Vendor';
+        }
+        elseif ($this->type == 'Customers.new') {
+            return 'Customer';
+        }
+    }
+    protected function _getTitleFromType()
+    {
+        if ($this->type == 'Vendors.new') {
+            return 'New Vendor';
+        }
+        elseif ($this->type == 'Customers.new') {
+            return 'New Customer';
         }
     }
     protected function _getCreated($created)

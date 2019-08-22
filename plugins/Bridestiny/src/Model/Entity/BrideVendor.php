@@ -18,11 +18,18 @@ class BrideVendor extends Entity
             return 'Unverified';
         }
         elseif ($this->status == '1') {
-            return 'Active';
+            return 'Verified';
         }
-        elseif ($this->status == '1') {
+        elseif ($this->status == '2') {
             return 'Banned';
         }
+        elseif ($this->status == '3') {
+            return 'Active';
+        }
+    }
+    protected function _getMobilePhone()
+    {
+        return '+' . $this->calling_code . $this->phone;
     }
     protected function _getCreated($created)
     {

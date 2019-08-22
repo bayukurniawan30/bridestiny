@@ -72,3 +72,11 @@
 .datepicker table tr td.disabled, .datepicker table tr td.disabled:hover {
     color: #d0d0d0!important;
 }
+.bridestiny-sidebar-notification-circle {
+    position: absolute; 
+    width: 8px; 
+    height: 8px; 
+    background: #fe7c96; 
+    border-radius: 50%;
+    margin-left: 5px;
+}

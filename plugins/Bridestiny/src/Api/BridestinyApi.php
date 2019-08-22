@@ -76,4 +76,66 @@ class BridestinyApi
 	    	return true;
 	    }
 	}
+	public function sendEmailNewVendorToAdmin($key, $dashboardLink, $userData, $vendorData)
+	{	
+		$purpleGlobal = new PurpleProjectGlobal();
+		$checkConnection = $purpleGlobal->isConnected();
+
+		if ($checkConnection == true) {
+			$http         = new Client();
+			$response     = $http->post($this->apiPath() . '/bridestiny/notification/new-vendor', 
+								[
+									'key'			=> $key,
+									'dashboardLink' => $dashboardLink,
+									'userData'      => $userData,
+									'vendorData'    => $vendorData
+								]
+							);
+			$verifyResult = $response->body();
+	        $decodeResult = json_decode($verifyResult, true);
+
+	        Log::write('debug', $decodeResult);
+
+	        if ($decodeResult['message'] == 'success') {
+	        	return true;
+	        }
+	        else {
+	        	return false;
+	        }
+		}
+	    else {
+	    	return true;
+	    }
+	}
+	public function sendEmailNewCustomerToAdmin($key, $dashboardLink, $userData, $customerData)
+	{	
+		$purpleGlobal = new PurpleProjectGlobal();
+		$checkConnection = $purpleGlobal->isConnected();
+
+		if ($checkConnection == true) {
+			$http         = new Client();
+			$response     = $http->post($this->apiPath() . '/bridestiny/notification/new-customer', 
+								[
+									'key'			=> $key,
+									'dashboardLink' => $dashboardLink,
+									'userData'      => $userData,
+									'customerData'  => $customerData
+								]
+							);
+			$verifyResult = $response->body();
+	        $decodeResult = json_decode($verifyResult, true);
+
+	        Log::write('debug', $decodeResult);
+
+	        if ($decodeResult['message'] == 'success') {
+	        	return true;
+	        }
+	        else {
+	        	return false;
+	        }
+		}
+	    else {
+	    	return true;
+	    }
+	}
 }

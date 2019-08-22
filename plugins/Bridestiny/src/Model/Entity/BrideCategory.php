@@ -60,4 +60,11 @@ class BrideCategory extends Entity
             return $this->modified;
         }
     }
+    protected function _getDefaultIcon()
+    {
+        $icon = str_replace('{{pixelSize}}', '30', $this->icon);
+        $icon = str_replace('{{color}}', '333333', $icon);
+
+        return $icon;
+    }
 }

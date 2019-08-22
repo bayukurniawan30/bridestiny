@@ -2,6 +2,7 @@
 
 namespace Bridestiny\Model\Table;
 
+use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Http\ServerRequest;
@@ -26,4 +27,14 @@ class BrideNotificationsTable extends Table
 			$entity->is_read  = '0';
         }
 	}
+	public function checkRead($status)
+	{
+		$total = $this->find()->where(['is_read' => $status])->count();
+		return $total;
+	}
+	public function findByRead(Query $query, array $options)
+    {
+        $read = $options['read'];
+        return $query->where(['is_read' => $read])->order(['id' => 'DESC']);
+    }
 }

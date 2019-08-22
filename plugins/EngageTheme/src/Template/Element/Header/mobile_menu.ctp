@@ -19,34 +19,25 @@
                     <a href="#" class="non-uikit">VENDORS BY CATEGORY</a>
 
                     <ul class="sub mega-menu-mobile">
-                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/18/000000/screenshot.png"> Photographers</a>
-                        </li>
-                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/18/000000/wedding-dress.png"> Wedding Dresses</a></li>
-                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/18/000000/women-shoe-side-view.png"> Shoes</a></li>
-                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/18/000000/pavilion.png"> Venue</a></li>
-
-                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/18/000000/bunch-flowers.png"> Flowers</a></li>
-                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/18/000000/wedding-cake.png"> Cake</a></li>
-                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/18/000000/tableware.png"> Catering</a>
-                        </li>
-                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/18/000000/slip-dress.png"> Bridesmaid Dresses</a>
-                        </li>
-
-                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/18/000000/kokoshnik.png"> Hair Accessories</a></li>
-                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/18/000000/ring-side-view.png"> Rings</a></li>
-                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/18/000000/hair-dryer.png"> HairItem</a></li>
-                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/18/000000/groom.png"> Groom</a>
-                        </li>
-
-                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/18/000000/stationery.png"> Stationery</a></li>
-                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/18/000000/overtime.png"> Weddings Planner</a></li>
-                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/18/000000/documentary.png"> Cinematographer</a></li>
-                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/18/000000/musical-notes.png"> Music</a></li>
+                        <?php
+                            $categories = $themeFunction->frontPageCategories();
+                            if ($categories->count() > 0):
+                                foreach ($categories as $category):
+                                    $categoryUrl = $this->Url->build([
+                                        '_name' => $themeFunction->routePrefix() . 'CategoryDetail',
+                                        'slug'  => $category->slug
+                                    ]);
+                        ?>
+                        <li><a href="<?= $categoryUrl ?>" class="non-uikit"><img class="megamenu-vc" src="<?= $this->Bride->categoryIconConverter($category->icon, 20, '000000') ?>"> <?= $category->name ?></a></li>
+                        <?php
+                                endforeach;
+                            endif;
+                        ?>
                     </ul>
                 </li>
                 <li><a href="#" class="non-uikit">BLOGS</a></li>
                 <li style="clear: both"><a href="#" class="non-uikit">ARE YOU A VENDOR?</a></li>
-                <li><a href="#" class="non-uikit"><span class="login-wedding-descmobile">Login</span></a></li>
+                <li><a href="#" class="non-uikit link-to-modal-brideme-login" data-brideme-type="couple" uk-toggle="target: #modal-brideme-login"><span class="login-wedding-descmobile">Login</span></a></li>
                 <li><a href="#" class="non-uikit"><span class="login-wedding-descmobile">Cart</span></a></li>
                 <!-- <li>
                     <form class="mobile-search-form" method="get">

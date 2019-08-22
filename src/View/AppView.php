@@ -39,5 +39,6 @@ class AppView extends View
         parent::initialize();
         $this->loadHelper('Setup');
         $this->loadHelper('Purple');
+        $this->loadHelper('Bridestiny.Bride');
     }
 }

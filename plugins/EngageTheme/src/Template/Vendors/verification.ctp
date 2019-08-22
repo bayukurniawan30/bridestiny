@@ -9,12 +9,13 @@
         'data-parsley-validate' => '',
         'url'                   => ['_name' => $themeFunction->routePrefix() . 'VendorAjaxVerification']
     ]);
+
+    echo $this->Form->hidden('ds', ['value' => $this->Url->build(['_name' => $themeFunction->routePrefix() . 'VendorViewDetail', 'id' => $sessionVendorId])])
 ?>
 <h3 class="non-uikit mb-4">Verification</h3>
 <p class="mb-5">
 We've sent the verification code to your email. Insert the verification code below.
 </p>
-<?= $sessionCode ?>
 
 <div class="row">
     <div class="col-md-12">

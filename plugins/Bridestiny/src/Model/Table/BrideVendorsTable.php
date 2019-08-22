@@ -72,9 +72,15 @@ class BrideVendorsTable extends Table
                // Bcrypt the token so BasicAuthenticate can check
                // it during login.
                $entity->api_key = $hasher->hash($entity->api_key_plain);
-        }
+          }
 		else {
 			$entity->modified = $date;
 		}
+     }
+     public function countVendorStatus($status)
+	{
+		$vendors = $this->find()->where(['status' => $status]);
+		$total   = $vendors->count();
+		return $total;
 	}
 }

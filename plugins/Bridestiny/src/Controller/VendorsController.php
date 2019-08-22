@@ -73,6 +73,7 @@ class VendorsController extends AppController
 
         $this->loadModel('Bridestiny.BrideVendors');
         $this->loadModel('Bridestiny.BrideVendorMedias');
+        $this->loadModel('Bridestiny.BrideNotifications');
         $this->loadModel('Bridestiny.BrideSettings');
 
         $purpleSettings = new PurpleProjectSettings();
@@ -318,11 +319,13 @@ class VendorsController extends AppController
 
         $session         = $this->getRequest()->getSession();
         $sessionCode     = $session->read('Bridestiny.verificationcode');
+        $sessionVendorId = $session->read('Bridestiny.vendorId');
 
         $data = [
             'breadcrumb'             => 'Home::Vendor::Verification',
             'vendorCodeVerification' => $vendorCodeVerification,
-            'sessionCode' => $sessionCode
+            'sessionCode'            => $sessionCode,
+            'sessionVendorId'        => $sessionVendorId
         ];
 
         $this->set($data);
@@ -392,6 +395,8 @@ class VendorsController extends AppController
                             if ($uploadKtp != false && $uploadNpwp != false) {
                                 $vendor->ktp  = $uploadKtp;
                                 $vendor->npwp = $uploadNpwp;
+
+                                $this->BrideVendors->save($vendor);
                             }
 
                             $session->write('Bridestiny.verificationcode', $code);
@@ -480,7 +485,57 @@ class VendorsController extends AppController
                     $vendor = $this->BrideVendors->get($sessionVendorId);
 					$vendor->status = '1';
 					if ($this->BrideVendors->save($vendor)) {
-                        $json = json_encode(['status' => 'ok']);
+                        /**
+                         * Save data to Notifications Table
+                         */
+                        $notification = $this->BrideNotifications->newEntity();
+                        $notification->type        = 'Vendors.new';
+                        $notification->content     = $vendor->name.' has registered to become a new vendor. Click to review the vendor.';
+                        $notification->relation_id = $sessionVendorId;
+
+                        // Send Email to User to Notify author
+                        $admins = $this->Admins->find();
+                        $key    = $this->Settings->settingsPublicApiKey();
+                        $dashboardLink = $this->request->getData('ds');
+                        
+                        $vendorData    = array(
+                            'name'   => $vendor->name,
+                            'email'  => $vendor->email,
+                            'phone'  => $vendor->mobile_phone,
+                            'domain' => $this->request->domain()
+                        );
+
+                        $bridestinyApi = new BridestinyApi();
+
+                        $emailNotification = [];
+                        foreach ($admins as $admin) {
+                            if ($admin->username != 'creatifycore') {
+                                $userData      = array(
+                                    'sitename'    => $this->Settings->settingsSiteName(),
+                                    'email'       => $admin->email,
+                                    'displayName' => $admin->display_name,
+                                    'level'       => $admin->level
+                                );
+
+                                $notifyUser = $bridestinyApi->sendEmailNewVendorToAdmin($key, $dashboardLink, json_encode($userData), json_encode($vendorData));
+
+                                if ($notifyUser == true) {
+                                    $emailNotification[$admin->email] = true;
+                                }
+                                else {
+                                    $emailNotification[$admin->email] = false;
+                                }
+                            }
+                        }
+
+                        if ($this->BrideNotifications->save($notification)) {
+                            $notification = true;
+                        }
+                        else {
+                            $notification = false;
+                        }
+                        
+                        $json = json_encode(['status' => 'ok', 'notification' => $notification, 'email' => $emailNotification]);
                     }
                     else {
                         $json = json_encode(['status' => 'error', 'error' => "Can't process your account. Please try again."]);

@@ -27,7 +27,7 @@
                             'placeholder'            => 'Name',
                             'data-parsley-minlength' => '2',
                             'data-parsley-maxlength' => '255',
-                            'uk-tooltip'             => 'title: Required. 2-255 chars.; pos: bottom',
+                            'uk-tooltip'             => 'title: Required. 2-255 chars.; pos: bottom-left',
                             'autofocus'              => 'autofocus',
                             'required'               => 'required'
                         ]);

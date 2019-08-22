@@ -28,31 +28,27 @@
                         <div class="mega-sub-menu">
                             <div class="inner">
                                 <div class="cta-block">
-                                    <a href="#lol">
+                                    <a href="#">
                                         <img class="cc_header_logo"
                                             src="https://caratsandcake.com/static_home/assets/img/vendor-menu-message.jpg">
                                     </a>
                                 </div>
                                 <div class="menu-items">
                                     <ul class="mega-sub-menu__items text-left">
-                                        
-                                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/20/000000/pavilion.png"> Venue</a></li>
-                                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/20/000000/screenshot.png"> Photographers</a></li>
-                                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/20/000000/video-call.png"> Videographer</a></li>
-                                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/20/000000/kokoshnik.png"> Make-up and hair-do</a></li>
-                                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/20/000000/wedding-dress.png"> Bridal </a></li>
-                                        
-                                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/20/000000/tableware.png"> Catering</a>
-                                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/20/000000/bunch-flowers.png"> Flowers & decoration</a></li>
-                                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/20/000000/wedding-gift.png"> Favor & gifts</a></li>
-                                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/20/000000/technical-support.png"> Officiant</a></li>
-                                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/20/000000/documentary.png"> Entertainment </a></li>
-                                            
-                                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/20/000000/selfie-booth.png"> Photo booth</a></li>                                                
-                                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/20/000000/wedding-cake.png"> Wedding Cake</a></li>
-                                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/20/000000/invitation.png"> Invitation</a></li>
-                                        <li><a href="#" class="non-uikit"><img class="megamenu-vc" src="https://img.icons8.com/ios/20/000000/overtime.png"> Weddings Planner</a></li>
-                                    
+                                        <?php
+                                            $categories = $themeFunction->frontPageCategories();
+                                            if ($categories->count() > 0):
+                                                foreach ($categories as $category):
+                                                    $categoryUrl = $this->Url->build([
+                                                        '_name' => $themeFunction->routePrefix() . 'CategoryDetail',
+                                                        'slug'  => $category->slug
+                                                    ]);
+                                        ?>
+                                        <li><a href="<?= $categoryUrl ?>" class="non-uikit"><img class="megamenu-vc" src="<?= $this->Bride->categoryIconConverter($category->icon, 20, '000000') ?>"> <?= $category->name ?></a></li>
+                                        <?php
+                                                endforeach;
+                                            endif;
+                                        ?>
                                     </ul>
                                 </div>
                             </div>

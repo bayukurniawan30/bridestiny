@@ -30,7 +30,7 @@
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title uk-margin-remove-bottom">Category</h4>
+                <h4 class="card-title uk-margin-remove-bottom">Categories</h4>
             </div>
             <div class="card-toolbar">
                 <button type="button" class="btn btn-gradient-primary btn-toolbar-card btn-sm btn-icon-text" onclick="location.href='<?= $newCategorytUrl ?>'">
@@ -57,6 +57,9 @@
                                     Parent
                                 </th>
                                 <th>
+                                    Icon
+                                </th>
+                                <th>
                                     Total Packages
                                 </th>
                                 <th>
@@ -68,7 +71,7 @@
                                 <th>
                                     Status
                                 </th>
-                                <th class="text-center">
+                                <th class="text-center" width="120">
                                     Action
                                 </th>
                             </tr>
@@ -96,6 +99,9 @@
                                             echo $this->cell('Bridestiny.Categories::parentCategory', [$category->parent]);
                                         }
                                     ?>
+                                </td>
+                                <td>
+                                    <img src="<?= $category->default_icon ?>">
                                 </td>
                                 <td>
                                     <?= $totalPackages ?>
@@ -147,7 +153,7 @@
     if ($categories->count() > 0):
 ?>
 <?= $this->element('Dashboard/Modal/delete_modal', [
-        'action'     => '-category',
+        'action'     => 'category',
         'form'       => $categoryDelete,
         'formAction' => 'ajax-delete'
 ]) ?>

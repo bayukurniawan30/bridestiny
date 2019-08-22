@@ -19,7 +19,7 @@
         'url'                   => ['_name' => $themeFunction->routePrefix() . 'VendorAjaxSignUp']
     ]);
 
-    echo $this->Form->hidden('country', ['id' => 'form-country']);
+    echo $this->Form->hidden('country', ['id' => 'form-country', 'value' => 'Indonesia']);
     echo $this->Form->hidden('country_code', ['id' => 'form-country-code', 'value' => 'id']);
     echo $this->Form->hidden('calling_code', ['id' => 'form-calling-code', 'value' => '62']);
 ?>

@@ -105,6 +105,8 @@ class CategoriesController extends AppController
                         'timeZone'           => $this->Settings->settingsTimeZone(),
                         'settingsDateFormat' => $queryDateFormat->value,
                         'settingsTimeFormat' => $queryTimeFormat->value,
+                        'mediaImageTotal'    => $medias->count(),
+					    'mediaImageLimit'    => $this->imagesLimit
     		    	];
                     $this->set($data);
                     

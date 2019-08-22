@@ -34,4 +34,10 @@ class ThemeFunction
 
 		return false;
 	}
+	public function frontPageCategories()
+	{
+		$categoriesTable = TableRegistry::get('Bridestiny.BrideCategories');
+		$categories      = $categoriesTable->frontPageCategories();
+		return $categories;
+	}
 }

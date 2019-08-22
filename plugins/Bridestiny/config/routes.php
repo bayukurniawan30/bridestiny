@@ -171,6 +171,12 @@ Router::plugin(
             ['prefix' => 'purple', 'controller' => 'Customers'], 
             ['_name' => $routePrefix . 'CustomersAction']);
 
+        $routes->connect('/customers/detail/:id', 
+			['prefix' => 'purple', 'controller' => 'Customers', 'action' => 'detail'], 
+			['_name' => $routePrefix . 'CustomerViewDetail'])
+            ->setPatterns(['id' => '\d+'])
+            ->setPass(['id']);
+
         /**
          * Vendors Route
          * Controller : Vendors
@@ -182,6 +188,17 @@ Router::plugin(
         $routes->connect('/vendors/:action', 
             ['prefix' => 'purple', 'controller' => 'Vendors'], 
             ['_name' => $routePrefix . 'VendorsAction']);
+
+        $routes->connect('/vendors/filter/:filter', 
+			['prefix' => 'purple', 'controller' => 'Vendors', 'action' => 'filter'], 
+			['_name' => $routePrefix . 'VendorsFilter'])
+            ->setPass(['filter']);
+
+        $routes->connect('/vendors/detail/:id', 
+			['prefix' => 'purple', 'controller' => 'Vendors', 'action' => 'detail'], 
+			['_name' => $routePrefix . 'VendorViewDetail'])
+            ->setPatterns(['id' => '\d+'])
+            ->setPass(['id']);
 
         /**
          * Categories Route
@@ -238,6 +255,29 @@ Router::plugin(
         $routes->connect('/settings/:action', 
             ['prefix' => 'purple', 'controller' => 'Settings'], 
             ['_name' => $routePrefix . 'SettingsAction']);
+
+        /**
+         * Notifications Route
+         * Controller : Customers
+         */
+        $routes->connect('/notifications', 
+            ['prefix' => 'purple', 'controller' => 'Notifications', 'action' => 'index'], 
+            ['_name' => $routePrefix . 'Notifications']);
+
+        $routes->connect('/notifications/detail/:id', 
+			['prefix' => 'purple', 'controller' => 'Notifications', 'action' => 'detail'], 
+			['_name' => $routePrefix . 'NotificationDetail'])
+            ->setPatterns(['id' => '\d+'])
+            ->setPass(['id']);
+
+        $routes->connect('/notifications/filter/:filter', 
+			['prefix' => 'purple', 'controller' => 'Notifications', 'action' => 'filter'], 
+			['_name' => $routePrefix . 'NotificationFilter'])
+            ->setPass(['filter']);
+
+        $routes->connect('/notifications/:action', 
+            ['prefix' => 'purple', 'controller' => 'Notifications'], 
+            ['_name' => $routePrefix . 'NotificationsAction']);
 
     }
 );

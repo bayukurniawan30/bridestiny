@@ -57,4 +57,9 @@ class BrideCategoriesTable extends Table
 		$loadParent = $this->find('list')->select(['id','name'])->where(['parent is' => NULL])->order(['id' => 'ASC'])->toArray();
 		return $loadParent;
 	}
+	public function frontPageCategories($orderBy = 'name', $order = 'ASC')
+	{
+		$categories = $this->find('all')->where(['status' => '1'])->order([$orderBy => $order]);
+		return $categories;
+	}
 }
