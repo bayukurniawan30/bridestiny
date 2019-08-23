@@ -9,19 +9,9 @@
 ?>
 
 <div class="row">
-    <div class="col-md-12">
-        <!-- Messages -->
-        <?php
-            if ($vendor->status == 1):
-        ?>
-        <div class="uk-alert-warning" uk-alert>
-            <a class="uk-alert-close" uk-close></a>
-            <p><span uk-icon="warning"></span> <?= $vendor->name ?> data need to be reviewed. Please check the vendor data and documents.</p>
-        </div>
-        <?php
-            endif;
-        ?>
-    </div>
+    <?= $this->element('Bridestiny.Purple/Vendors/messages', [
+        'vendor' => $vendor,
+    ]) ?>
 
     <div class="col-md-4 grid-margin">
         <?= $this->element('Bridestiny.Purple/Vendors/profile_card', [
@@ -29,11 +19,9 @@
         ]) ?>
 
         <?php
-            if ($vendor->status == '1' || $vendor->status == '2' || $vendor->status == '3') {
-                echo $this->element('Bridestiny.Purple/Vendors/profile_navigation', [
-                    'vendor' => $vendor,
-                ]);
-            }
+            echo $this->element('Bridestiny.Purple/Vendors/profile_navigation', [
+                'vendor' => $vendor,
+            ]);
         ?>
     </div>
 
@@ -56,8 +44,21 @@
                     <dt class="uk-margin-small-bottom"><strong>Registered Date</strong></dt>
                     <dd><?= date($settingsDateFormat.' '.$settingsTimeFormat, strtotime($vendor->created)) ?></dd>
 
-                    <dt class="uk-margin-small-bottom"><strong>Location</strong></dt>
-                    <dd><?= $city ?> - <?= $province ?></dd>
+                    <?php
+                        if ($vendor->status == '3'):
+                    ?>
+                    <dt class="uk-margin-small-bottom"><strong>Active Date</strong></dt>
+                    <dd><?= date($settingsDateFormat.' '.$settingsTimeFormat, strtotime($vendor->confirm_date)) ?></dd>
+                    <?php
+                        elseif ($vendor->status == '4'):
+                    ?>
+                    <dt class="uk-margin-small-bottom"><strong>Decline Date</strong></dt>
+                    <dd><?= date($settingsDateFormat.' '.$settingsTimeFormat, strtotime($vendor->decline_date)) ?></dd>
+                    <?php
+                        endif;
+                    ?>
+                    <dt class="uk-margin-small-bottom"><strong>Address and Location</strong></dt>
+                    <dd><?= $vendor->address ?>, <?= $city ?> - <?= $province ?></dd>
 
                     <dt class="uk-margin-small-bottom"><strong>Vendor URL</strong></dt>
                     <dd><a href="<?= $vendorUrl ?>" target="_blank"><?= $vendorUrl ?></a></dd>
@@ -66,4 +67,18 @@
         </div>
     </div>
 </div>
+
+<?php
+    if ($vendor->status == '1') {
+        echo $this->element('Bridestiny.Purple/Modal/confirm_vendor_modal', [
+            'form' => $vendorConfirm,
+            'vendor' => $vendor,
+        ]);
+
+        echo $this->element('Bridestiny.Purple/Modal/decline_vendor_modal', [
+            'form' => $vendorReject,
+            'vendor' => $vendor,
+        ]);
+    }
+?>
         

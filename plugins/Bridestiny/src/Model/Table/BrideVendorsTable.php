@@ -60,9 +60,9 @@ class BrideVendorsTable extends Table
 		if ($entity->isNew()) {
                $entity->created  = $date;
 
-               $sluggedTitle = Text::slug(strtolower($entity->name));
+               // $sluggedTitle = Text::slug(strtolower($entity->name));
                // trim slug to maximum length defined in schema
-               $entity->user_id = substr($sluggedTitle, 0, 191);
+               // $entity->user_id = substr($sluggedTitle, 0, 191);
                
                $hasher = new DefaultPasswordHasher();
 
@@ -74,7 +74,14 @@ class BrideVendorsTable extends Table
                $entity->api_key = $hasher->hash($entity->api_key_plain);
           }
 		else {
-			$entity->modified = $date;
+               $entity->modified = $date;
+               
+               if ($entity->status == '3') {
+                    $entity->confirm_date = $date;
+               }
+               elseif ($entity->status == '4') {
+                    $entity->decline_date = $date;
+               }
 		}
      }
      public function countVendorStatus($status)

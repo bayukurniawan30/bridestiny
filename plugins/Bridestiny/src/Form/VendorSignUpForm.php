@@ -66,6 +66,21 @@ class VendorSignUpForm extends Form
                     'province' => [
                         'message' => 'Province is required',
                     ]])
+                  ->requirePresence([
+                    'address' => [
+                        'message' => 'Address is required',
+                    ]])
+                  ->notEmpty('address', 'Address is required')
+                  ->add('address', [
+                        'minLength' => [
+                            'rule'    => ['minLength', 5],
+                            'message' => 'Address need to be at least 5 characters'
+                        ],
+                        'maxLength' => [
+                            'rule'    => ['maxLength', 100],
+                            'message' => 'Address is maximum 100 characters'
+                        ]
+                    ])
                   ->notEmpty('province', 'Province is required')
                   ->requirePresence([
                     'city' => [

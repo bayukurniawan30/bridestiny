@@ -26,6 +26,9 @@ class BrideVendor extends Entity
         elseif ($this->status == '3') {
             return 'Active';
         }
+        elseif ($this->status == '4') {
+            return 'Declined';
+        }
     }
     protected function _getMobilePhone()
     {

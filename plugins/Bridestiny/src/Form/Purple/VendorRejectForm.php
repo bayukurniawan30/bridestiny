@@ -19,7 +19,8 @@ class VendorRejectForm extends Form
                             'rule'    => ['isInteger'],
                             'message' => 'Vendor id must be an integer value'
                         ]
-                    ]);
+                    ])
+                  ->allowEmpty('decline_reason');
 
         return $validator;
     }

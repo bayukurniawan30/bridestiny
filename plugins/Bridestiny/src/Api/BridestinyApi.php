@@ -138,4 +138,67 @@ class BridestinyApi
 	    	return true;
 	    }
 	}
+	public function sendEmailVendorConfirmation($key, $dashboardLink, $userData, $siteData, $senderData)
+	{	
+		$purpleGlobal = new PurpleProjectGlobal();
+		$checkConnection = $purpleGlobal->isConnected();
+
+		if ($checkConnection == true) {
+			$http         = new Client();
+			$response     = $http->post($this->apiPath() . '/bridestiny/confirm-vendor', 
+								[
+									'key'			=> $key,
+									'dashboardLink' => $dashboardLink,
+                                    'userData'      => $userData,
+                                    'siteData'      => $siteData,
+									'senderData'    => $senderData
+								]
+							);
+			$verifyResult = $response->body();
+	        $decodeResult = json_decode($verifyResult, true);
+
+	        Log::write('debug', $decodeResult);
+
+	        if ($decodeResult['message'] == 'success') {
+	        	return true;
+	        }
+	        else {
+	        	return false;
+	        }
+		}
+	    else {
+	    	return true;
+	    }
+	}
+	public function sendEmailVendorDeclined($key, $userData, $siteData, $senderData)
+	{	
+		$purpleGlobal = new PurpleProjectGlobal();
+		$checkConnection = $purpleGlobal->isConnected();
+
+		if ($checkConnection == true) {
+			$http         = new Client();
+			$response     = $http->post($this->apiPath() . '/bridestiny/decline-vendor', 
+								[
+									'key'			=> $key,
+                                    'userData'      => $userData,
+                                    'siteData'      => $siteData,
+									'senderData'    => $senderData
+								]
+							);
+			$verifyResult = $response->body();
+	        $decodeResult = json_decode($verifyResult, true);
+
+	        Log::write('debug', $decodeResult);
+
+	        if ($decodeResult['message'] == 'success') {
+	        	return true;
+	        }
+	        else {
+	        	return false;
+	        }
+		}
+	    else {
+	    	return true;
+	    }
+    }
 }

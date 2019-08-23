@@ -11,6 +11,8 @@ use App\Form\Purple\SearchForm;
 use App\Purple\PurpleProjectGlobal;
 use App\Purple\PurpleProjectSettings;
 use App\Purple\PurpleProjectPlugins;
+use App\Purple\PurpleProjectApi;
+use Bridestiny\Api\BridestinyApi;
 use Bridestiny\Functions\GlobalFunctions;
 use Bridestiny\Form\Purple\VendorConfirmForm;
 use Bridestiny\Form\Purple\VendorRejectForm;
@@ -183,8 +185,13 @@ class VendorsController extends AppController
     {
         $vendors = $this->BrideVendors->find('all')->where(['id' => $id])->limit(1);
         if ($vendors->count() > 0) {
+            $vendorConfirm = new VendorConfirmForm();
+            $vendorReject  = new VendorRejectForm();
+
             $vendor = $vendors->first();
             $this->set('vendor', $vendor);
+            $this->set('vendorConfirm', $vendorConfirm);
+            $this->set('vendorReject', $vendorReject);
         }
         else {
             throw new NotFoundException(__('Page not found'));
@@ -215,6 +222,210 @@ class VendorsController extends AppController
             else {
                 throw new NotFoundException(__('Page not found'));
             }
+        }
+        else {
+            throw new NotFoundException(__('Page not found'));
+        }
+    }
+    public function ajaxConfirm()
+    {
+        $this->viewBuilder()->enableAutoLayout(false);
+
+        $vendorConfirm = new VendorConfirmForm();
+        if ($this->request->is('ajax') || $this->request->is('post')) {
+            if ($vendorConfirm->execute($this->request->getData())) {
+                $session   = $this->getRequest()->getSession();
+                $sessionID = $session->read('Admin.id');
+
+                $vendor         = $this->BrideVendors->get($this->request->getData('id'));
+                $vendorName     = $vendor->name;
+                $vendor         = $this->BrideVendors->patchEntity($vendor, $this->request->getData());
+                $vendor->status = '3';
+
+                if ($this->BrideVendors->save($vendor)) {
+                    $recordId = $vendor->id;
+                    $vendor   = $this->BrideVendors->get($recordId);
+
+                    // Send Email to User to Notify user
+                    $key    = $this->Settings->settingsPublicApiKey();
+                    $dashboardLink = $this->request->getData('ds');
+                    $userData      = array(
+                        'sitename'    => $this->Settings->settingsSiteName(),
+                        'displayName' => $vendor->name,
+                        'email'       => $vendor->email,
+                    );
+
+                    $purpleGlobal = new PurpleProjectGlobal();
+                    $protocol     = $purpleGlobal->protocol();
+                    
+                    if ($this->Settings->settingsLogo() == '') {
+                        $siteLogo = $protocol.$this->request->env('HTTP_HOST').$this->request->getAttribute('webroot').'master-assets/img/logo.svg';
+                    }
+                    else {
+                        $siteLogo = $protocol.$this->request->env('HTTP_HOST').$this->request->getAttribute('webroot').'uploads/images/original/'.$this->Settings->settingsLogo();
+                    }
+
+                    $siteData = array(
+                        'siteLogo'    => $siteLogo,
+                        'siteName'    => $this->Settings->settingsSiteName(),
+                        'siteTagline' => $this->Settings->settingsTagLine(),
+                        'siteEmail'   => $this->Settings->settingsEmail(),
+                        'siteAddress' => $this->Settings->settingsPhone(),
+                        'sitePhone'   => $this->Settings->settingsAddress(),
+                    );
+                    $senderData   = array(
+                        'domain' => $this->request->domain()
+                    );
+                    $bridestinyApi = new BridestinyApi();
+                    $notifyUser    = $bridestinyApi->sendEmailVendorConfirmation($key, $dashboardLink, json_encode($userData), json_encode($siteData), json_encode($senderData));
+
+                    if ($notifyUser == true) {
+                        $emailNotification = true;
+                    }
+                    else {
+                        $emailNotification = false;
+                    }
+
+                    /**
+                     * Save user activity to histories table
+                     * array $options => title, detail, admin_id
+                     */
+                    
+                    $options = [
+                        'title'    => 'Bridestiny(Plugin): Confirmation of a Vendor Account',
+                        'detail'   => ' confirm '.$vendorName.' account and make it\'s account active.',
+                        'admin_id' => $sessionID
+                    ];
+ 
+                    $this->loadModel('Histories');
+                    $saveActivity   = $this->Histories->saveActivity($options);
+
+                    if ($saveActivity == true) {
+                        $json = json_encode(['status' => 'ok', 'activity' => true, 'email' => $emailNotification]);
+                    }
+                    else {
+                        $json = json_encode(['status' => 'ok', 'activity' => false, 'email' => $emailNotification]);
+                    }
+                }
+                else {
+                    $json = json_encode(['status' => 'error', 'error' => "Can't delete data. Please try again."]);
+                }
+
+            }
+			else {
+				$errors = $vendorConfirm->errors();
+                $json = json_encode(['status' => 'error', 'error' => $errors]);
+			}
+
+			$this->set(['json' => $json]);
+        }
+        else {
+            throw new NotFoundException(__('Page not found'));
+        }
+    }
+    public function ajaxDecline()
+    {
+        $this->viewBuilder()->enableAutoLayout(false);
+
+        $vendorReject  = new VendorRejectForm();
+        if ($this->request->is('ajax') || $this->request->is('post')) {
+            if ($vendorReject->execute($this->request->getData())) {
+                $session   = $this->getRequest()->getSession();
+                $sessionID = $session->read('Admin.id');
+
+                $vendor         = $this->BrideVendors->get($this->request->getData('id'));
+                $vendorName     = $vendor->name;
+                $vendor         = $this->BrideVendors->patchEntity($vendor, $this->request->getData());
+                $vendor->status = '4';
+
+                if ($this->BrideVendors->save($vendor)) {
+                    $recordId = $vendor->id;
+                    $vendor   = $this->BrideVendors->get($recordId);
+                    // Send Email to User to Notify user
+                    $key    = $this->Settings->settingsPublicApiKey();
+                    $userData      = array(
+                        'sitename'    => $this->Settings->settingsSiteName(),
+                        'displayName' => $vendor->name,
+                        'email'       => $vendor->email,
+                    );
+
+                    if (empty($this->request->getData('decline_reason'))) {
+                        $userData['reason'] = NULL;
+                    }
+                    else {
+                        $userData['reason'] = strip_tags($this->request->getData('decline_reason'));
+                    }
+
+                    $purpleGlobal = new PurpleProjectGlobal();
+                    $protocol     = $purpleGlobal->protocol();
+                    
+                    if ($this->Settings->settingsLogo() == '') {
+                        $siteLogo = $protocol.$this->request->env('HTTP_HOST').$this->request->getAttribute('webroot').'master-assets/img/logo.svg';
+                    }
+                    else {
+                        $siteLogo = $protocol.$this->request->env('HTTP_HOST').$this->request->getAttribute('webroot').'uploads/images/original/'.$this->Settings->settingsLogo();
+                    }
+
+                    $siteData = array(
+                        'siteLogo'    => $siteLogo,
+                        'siteName'    => $this->Settings->settingsSiteName(),
+                        'siteTagline' => $this->Settings->settingsTagLine(),
+                        'siteEmail'   => $this->Settings->settingsEmail(),
+                        'siteAddress' => $this->Settings->settingsPhone(),
+                        'sitePhone'   => $this->Settings->settingsAddress(),
+                    );
+                    $senderData   = array(
+                        'domain' => $this->request->domain()
+                    );
+                    $bridestinyApi = new BridestinyApi();
+                    $notifyUser    = $bridestinyApi->sendEmailVendorDeclined($key, json_encode($userData), json_encode($siteData), json_encode($senderData));
+
+                    if ($notifyUser == true) {
+                        $emailNotification = true;
+                    }
+                    else {
+                        $emailNotification = false;
+                    }
+
+                    /**
+                     * Save user activity to histories table
+                     * array $options => title, detail, admin_id
+                     */
+
+                    if (empty($this->request->getData('decline_reason'))) {
+                        $reason = '';
+                    }
+                    else {
+                        $reason = 'The reason is ' . $this->request->getData('decline_reason');
+                    }
+                    
+                    $options = [
+                        'title'    => 'Bridestiny(Plugin): Decline of a Vendor Account',
+                        'detail'   => ' decline '.$vendorName.' account.' . $reason,
+                        'admin_id' => $sessionID
+                    ];
+ 
+                    $this->loadModel('Histories');
+                    $saveActivity   = $this->Histories->saveActivity($options);
+
+                    if ($saveActivity == true) {
+                        $json = json_encode(['status' => 'ok', 'activity' => true, 'email' => $emailNotification]);
+                    }
+                    else {
+                        $json = json_encode(['status' => 'ok', 'activity' => false, 'email' => $emailNotification]);
+                    }
+                }
+                else {
+                    $json = json_encode(['status' => 'error', 'error' => "Can't delete data. Please try again."]);
+                }
+
+            }
+			else {
+				$errors = $vendorReject->errors();
+                $json = json_encode(['status' => 'error', 'error' => $errors]);
+			}
+
+			$this->set(['json' => $json]);
         }
         else {
             throw new NotFoundException(__('Page not found'));

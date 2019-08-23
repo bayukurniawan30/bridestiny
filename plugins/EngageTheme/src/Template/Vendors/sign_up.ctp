@@ -126,6 +126,22 @@ Become a member today to get access to your custom profile and<br>our exclusive 
                     </div>
 
                     <div class="uk-margin-small uk-width-1-1">
+                        <label class="uk-form-label" for="form-stacked-name">Address</label>
+                        <div class="uk-form-controls">
+                            <?php
+                                echo $this->Form->text('address', [
+                                    'id'                     => 'form-stacked-name',
+                                    'class'                  => 'uk-input',
+                                    'placeholder'            => 'Address',
+                                    'data-parsley-minlength' => '10',
+                                    'data-parsley-maxlength' => '100',
+                                    'required'               => 'required'
+                                ]);
+                            ?>
+                        </div>
+                    </div>
+
+                    <div class="uk-margin-small uk-width-1-1">
                         <label class="uk-form-label" for="form-stacked-province">Province</label>
                         <div class="uk-form-controls">
                             <?php

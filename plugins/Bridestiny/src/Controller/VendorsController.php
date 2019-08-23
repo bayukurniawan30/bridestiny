@@ -362,11 +362,13 @@ class VendorsController extends AppController
 			if ($vendorSignUp->execute($this->request->getData())) {
                 $session   = $this->getRequest()->getSession();
 
-                $find = $this->BrideVendors->find()->where(['email' => trim($this->request->getData('email'))]);
+                $userId = Text::slug(strtolower(trim($this->request->getData('name'))));
+                $find   = $this->BrideVendors->find()->where(['email' => trim($this->request->getData('email'))]);
                 if ($find->count() > 0) {
                     $json = json_encode(['status' => 'error', 'error' => "Email is already used. Please use another email."]);
                 }
                 else {
+                    $findUserId = $this->BrideVendors->find()->where(['user_id' => $userId]);
                     $purpleApi = new PurpleProjectApi();
                     $verifyEmail = $purpleApi->verifyEmail($this->request->getData('email'));
 
@@ -379,6 +381,16 @@ class VendorsController extends AppController
                         $vendor = $this->BrideVendors->patchEntity($vendor, $this->request->getData());
                         $vendor->ktp  = 'uploading';
                         $vendor->npwp = 'uploading'; 
+                        if ($findUserId->count() > 0) {
+                            $randomUserId = rand(100, 999);
+                            $sluggedTitle = Text::slug(strtolower($this->request->getData('name').'-'.$randomUserId));
+                            $vendor->user_id = $sluggedTitle; 
+                        }
+                        else {
+                            $sluggedTitle = Text::slug(strtolower($this->request->getData('name')));
+                            $vendor->user_id = $sluggedTitle;
+                        }
+
                         if ($this->request->getData('country') != 'Indonesia') {
                             $vendor->province = 'none';
                             $vendor->city     = 'none';
@@ -441,11 +453,6 @@ class VendorsController extends AppController
                             else {
                                 $emailNotification = false;
                             }
-
-                            /**
-                             * Create notification to system
-                             * array $options => title, detail
-                             */
 
                             $json = json_encode(['status' => 'ok', 'notification' => false, 'email' => $emailNotification]);
                         }

@@ -9,19 +9,9 @@
 ?>
 
 <div class="row">
-    <div class="col-md-12">
-        <!-- Messages -->
-        <?php
-            if ($vendor->status == 1):
-        ?>
-        <div class="uk-alert-warning" uk-alert>
-            <a class="uk-alert-close" uk-close></a>
-            <p><span uk-icon="warning"></span> <?= $vendor->name ?> data need to be reviewed. Please check the vendor data and documents.</p>
-        </div>
-        <?php
-            endif;
-        ?>
-    </div>
+    <?= $this->element('Bridestiny.Purple/Vendors/messages', [
+        'vendor' => $vendor,
+    ]) ?>
 
     <div class="col-md-4 grid-margin">
         <?= $this->element('Bridestiny.Purple/Vendors/profile_card', [
@@ -64,4 +54,18 @@
         </div>
     </div>
 </div>
+
+<?php
+    if ($vendor->status == '1') {
+        echo $this->element('Bridestiny.Purple/Modal/confirm_vendor_modal', [
+            'form' => $vendorConfirm,
+            'vendor' => $vendor,
+        ]);
+
+        echo $this->element('Bridestiny.Purple/Modal/decline_vendor_modal', [
+            'form' => $vendorReject,
+            'vendor' => $vendor,
+        ]);
+    }
+?>
         
