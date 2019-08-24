@@ -204,6 +204,11 @@ class VendorsController extends AppController
             $vendor = $vendors->first();
             $this->set('vendor', $vendor);
 
+            $vendorConfirm = new VendorConfirmForm();
+            $vendorReject  = new VendorRejectForm();
+            $this->set('vendorConfirm', $vendorConfirm);
+            $this->set('vendorReject', $vendorReject);
+
             $availablePage = ['documents', 'about', 'portfolios', 'faqs', 'products'];
 
             if (in_array($page, $availablePage)) {
