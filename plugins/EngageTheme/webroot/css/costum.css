@@ -373,7 +373,7 @@ font-family: 'Playfair Display', serif; */
     bottom: 35px;
     border-radius: 50%;
     position: absolute;
-    background-image: url(../images/sound-mute.png) ;
+    background-image: url(../img/sound-mute.png) ;
     background-position: center center;
     background-repeat: no-repeat;
 }
@@ -390,7 +390,7 @@ font-family: 'Playfair Display', serif; */
 
 }
 .icon-sound-wrapp.soundoff{
-    background-image: url(../images/sound-on.png) ;
+    background-image: url(../img/sound-on.png) ;
 }
 .icon-sound-wrapp:hover,
 .iconsoundwrapp-play:hover{
@@ -455,14 +455,14 @@ footer {
     margin-top: 0;
 }
 .footer-main li span.phone {
-    background: url(https://caratsandcake.com/static_home/assets/img/footer-icons.png) left top no-repeat;
+    background: url(../img/footer-icons.png) left top no-repeat;
     padding-left: 28px;
     color: #000;
     font-size: 16px;
     background-position: 0px 4px;
 }
 .footer-main li a.email {
-    background: url(https://caratsandcake.com/static_home/assets/img/footer-icons.png) left -13px no-repeat;
+    background: url(../img/footer-icons.png) left -13px no-repeat;
     padding-left: 28px;
 }
 
@@ -667,7 +667,7 @@ footer {
     margin-top: 15px;
 }
 .vendors-section .s3 {
-    background-image: url(../images/sprite3b.png);
+    background-image: url(../img/sprite3b.png);
     background-repeat: no-repeat;
     float: left;
 }
@@ -732,12 +732,12 @@ footer {
 
 .vendors-section .icon-weddingplanner {
     background-position: -129px -52px;
-    background-image: url(../images/sprite-nav-icons.png);
+    background-image: url(../img/sprite-nav-icons.png);
     background-repeat: no-repeat;
 }
 
 .vendors-section .icon-cinematographer {
-    background-image: url(../images/sprite-nav-icons.png);
+    background-image: url(../img/sprite-nav-icons.png);
     background-position: -135px -14px;
 }
 
@@ -822,7 +822,7 @@ footer {
 }
 
 .vendor-new-sprite {
-    background: transparent url(../images/sprite_hearts_smaller.png) no-repeat 0px 0px;
+    background: transparent url(../img/sprite_hearts_smaller.png) no-repeat 0px 0px;
     height: 13px;
     width: 15px;
     text-align: left;
@@ -874,7 +874,7 @@ footer {
 }
 i.icon-arrow {
     position: relative;
-    background-image: url(../images/drop-down-arrow.png) !important;
+    background-image: url(../img/drop-down-arrow.png) !important;
     background-repeat: no-repeat;
     background-position: -1px -27px;
     width: 20px;
