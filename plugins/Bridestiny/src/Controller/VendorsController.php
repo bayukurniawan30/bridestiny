@@ -427,10 +427,10 @@ class VendorsController extends AppController
                             $protocol     = $purpleGlobal->protocol();
                             
                             if ($this->Settings->settingsLogo() == '') {
-                                $siteLogo = $protocol.$this->request->env('HTTP_HOST').$this->request->getAttribute('webroot').'master-assets/img/logo.svg';
+                                $siteLogo = $protocol.$this->request->getEnv('HTTP_HOST').$this->request->getAttribute('webroot').'master-assets/img/logo.svg';
                             }
                             else {
-                                $siteLogo = $protocol.$this->request->env('HTTP_HOST').$this->request->getAttribute('webroot').'uploads/images/original/'.$this->Settings->settingsLogo();
+                                $siteLogo = $protocol.$this->request->getEnv('HTTP_HOST').$this->request->getAttribute('webroot').'uploads/images/original/'.$this->Settings->settingsLogo();
                             }
 
                             $siteData = array(
