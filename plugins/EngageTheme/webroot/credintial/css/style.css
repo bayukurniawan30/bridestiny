@@ -44,6 +44,9 @@ body {
 .nano {
   height: 60vh;
 }
+.nano.sign-in-form {
+  height: 180px!important;
+}
 .form-wrap {
   width: 50%;
   background: #fff;
@@ -159,3 +162,15 @@ body {
   .demo-pagination .active:hover {
     background: #eee;
     color: #283148; }
+
+.required-form-label {
+  color: #ff0000;
+  font-size: 14px;
+}
+.uk-radio:checked, .uk-checkbox:checked, .uk-checkbox:indeterminate {
+  background-color: #eb5b64;
+}
+input.parsley-success, select.parsley-success, textarea.parsley-success {
+  border-color: rgb(229, 229, 229);
+  color: rgb(102, 102, 102);
+}

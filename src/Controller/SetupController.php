@@ -24,7 +24,9 @@ class SetupController extends AppController
 {
 	public function initialize()
 	{
-	    parent::initialize();
+		parent::initialize();
+        $this->Auth->allow();
+		
 	    // Temporary images folder
 	    $dir = new Folder(TMP . 'exports', true, 0777);
 	    $dir = new Folder(TMP . 'uploads', true, 0777);

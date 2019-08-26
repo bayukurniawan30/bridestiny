@@ -1508,7 +1508,7 @@ ul.connect-with-vendor li a {
 	     min-height: 50vw;
 }
 .fullscreen-slideshow-content {
-   min-height: 290px;
+   min-height: 250px;
 }
 .fullscreen-slideshowS .slick-slide img{
 	width: 100%;
@@ -1824,6 +1824,9 @@ ul.connect-with-vendor li a {
 } 
 section{
 	margin-top: 100px;
+}
+section.fdb-block{
+	margin-top: 0;
 }
 
 @keyframes fadeInDown {
@@ -2206,3 +2209,28 @@ textarea{
 .iti {
     width: 100%;
 }
+.bridestiny-page-title {
+    font-size: 2rem;
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 30px;
+}
+.bridestiny-page-title-divider {
+    width: 100px;
+    height: 1px;
+    background-color: #eb6068;
+    margin: 0 auto;
+}
+.bridestiny-signed-in-dropdown > li {
+    float: left;
+    width: 100%;
+    margin-left: 0;
+    padding-top: 5px!important;
+    padding-bottom: 5px!important;
+}
+.bridestiny-signed-in-dropdown > li:first-child {
+    padding-top: 0!important;
+}
+.bridestiny-signed-in-dropdown > li .uk-width-expand {
+    margin-top: -5px!important;
+}
+

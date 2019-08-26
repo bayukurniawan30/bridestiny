@@ -18,7 +18,8 @@
 		</div>
 
 		<!-- Modals -->
-		<?= $this->element('Modals/login') ?>
+		<?= $this->element('Modals/couples_login') ?>
+		<?= $this->element('Modals/vendor_login') ?>
 
 		<?= $this->element('script') ?>
   	</body>

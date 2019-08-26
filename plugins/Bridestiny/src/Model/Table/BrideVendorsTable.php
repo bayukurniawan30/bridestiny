@@ -16,36 +16,36 @@ class BrideVendorsTable extends Table
 	public function initialize(array $config)
 	{
 		$this->setTable('bride_vendors');
-        $this->setPrimaryKey('id');
-        $this->hasMany('Bridestiny.BrideReviews')
-             ->setForeignKey('vendor_id');
-        $this->hasMany('Bridestiny.BrideVendorPosts')
-             ->setForeignKey('vendor_id');
-        $this->hasMany('Bridestiny.BridePortfolios')
-             ->setForeignKey('vendor_id');
-        $this->hasOne('Bridestiny.BrideAbout')
-             ->setForeignKey('vendor_id');
-        $this->hasMany('Bridestiny.BrideFaqs')
-             ->setForeignKey('vendor_id');
-        $this->hasMany('Bridestiny.BrideVendorServices')
-             ->setForeignKey('vendor_id');
-        $this->hasMany('Bridestiny.BrideCalendars')
-             ->setForeignKey('vendor_id');
-        $this->hasMany('Bridestiny.BrideProducts')
-             ->setForeignKey('vendor_id');
-        $this->hasMany('Bridestiny.BrideReviews')
-             ->setForeignKey('vendor_id');
-        $this->hasMany('Bridestiny.BrideVendorAds')
-             ->setForeignKey('vendor_id');
-        $this->hasMany('Bridestiny.BrideOrders')
-             ->setForeignKey('vendor_id');
-        $this->hasMany('Bridestiny.BrideVendorMedias')
-             ->setForeignKey('vendor_id');
-        $this->belongsToMany('Bridestiny.BrideChatMessages', [
-            'joinTable'        => 'bride_chatMessages',
-            'foreignKey'       => 'vendor_id',
-            'targetForeignKey' => 'customer_id'
-        ]);
+          $this->setPrimaryKey('id');
+          $this->hasMany('Bridestiny.BrideReviews')
+               ->setForeignKey('vendor_id');
+          $this->hasMany('Bridestiny.BrideVendorPosts')
+               ->setForeignKey('vendor_id');
+          $this->hasMany('Bridestiny.BridePortfolios')
+               ->setForeignKey('vendor_id');
+          $this->hasOne('Bridestiny.BrideAbout')
+               ->setForeignKey('vendor_id');
+          $this->hasMany('Bridestiny.BrideFaqs')
+               ->setForeignKey('vendor_id');
+          $this->hasMany('Bridestiny.BrideVendorServices')
+               ->setForeignKey('vendor_id');
+          $this->hasMany('Bridestiny.BrideCalendars')
+               ->setForeignKey('vendor_id');
+          $this->hasMany('Bridestiny.BrideProducts')
+               ->setForeignKey('vendor_id');
+          $this->hasMany('Bridestiny.BrideReviews')
+               ->setForeignKey('vendor_id');
+          $this->hasMany('Bridestiny.BrideVendorAds')
+               ->setForeignKey('vendor_id');
+          $this->hasMany('Bridestiny.BrideOrders')
+               ->setForeignKey('vendor_id');
+          $this->hasMany('Bridestiny.BrideVendorMedias')
+               ->setForeignKey('vendor_id');
+          $this->belongsToMany('Bridestiny.BrideChatMessages', [
+               'joinTable'        => 'bride_chatMessages',
+               'foreignKey'       => 'vendor_id',
+               'targetForeignKey' => 'customer_id'
+          ]);
         
     }
     public function beforeSave($event, $entity, $options)
@@ -58,7 +58,8 @@ class BrideVendorsTable extends Table
 		$entity->name = ucwords(trim($entity->name));
 
 		if ($entity->isNew()) {
-               $entity->created  = $date;
+               $entity->created   = $date;
+               $entity->user_type = 'vendor';
 
                // $sluggedTitle = Text::slug(strtolower($entity->name));
                // trim slug to maximum length defined in schema
@@ -89,5 +90,13 @@ class BrideVendorsTable extends Table
 		$vendors = $this->find()->where(['status' => $status]);
 		$total   = $vendors->count();
 		return $total;
-	}
+     }
+     public function findAuth(\Cake\ORM\Query $query, array $options)
+     {
+          $query
+               ->select(['id', 'email', 'password', 'user_type'])
+               ->where(['BrideVendors.status' => 3]);
+
+          return $query;
+     }
 }

@@ -10,7 +10,6 @@ Router::plugin(
     function (RouteBuilder $routes) {
         // $routes->fallbacks(DashedRoute::class);
 
-
     }
 );
 
@@ -22,6 +21,18 @@ Router::plugin(
 
         $globalFunction = new GlobalFunctions();
         $routePrefix    = $globalFunction->routePrefix();
+
+        $routes->prefix('v', function ($routes) use ($routePrefix) {
+            $routes->prefix('dashboard', function ($routes) use ($routePrefix) {
+                $routes->connect('/', 
+                    ['controller' => 'VendorDashboard', 'action' => 'index'],
+                    ['_name' => $routePrefix . 'VendorDashboard']);
+
+                $routes->connect('/:action', 
+                    ['controller' => 'VendorDashboard'],
+                    ['_name' => $routePrefix . 'VendorDashboardAction']);
+            });
+        });
 
         $routes->connect('/vendor/sign-up', 
             ['controller' => 'Vendors', 'action' => 'signUp'], 
@@ -36,8 +47,8 @@ Router::plugin(
             ['controller' => 'Vendors', 'action' => 'signIn'], 
             ['_name' => $routePrefix . 'VendorSignIn']);
 
-            // Process
-            $routes->connect('/vendor/ajax-sign-in', 
+            // Proccess
+            $routes->connect('vendor/ajax-sign-in', 
                 ['controller' => 'Vendors', 'action' => 'ajaxSignIn'], 
                 ['_name' => $routePrefix . 'VendorAjaxSignIn']);
 
@@ -129,6 +140,10 @@ Router::plugin(
             ['controller' => 'Customers', 'action' => 'profile'], 
             ['_name' => $routePrefix . 'CustomerProfile']);
 
+        // $routes->connect('v/dashboard', 
+        //     ['controller' => 'VendorDashboard', 'action' => 'index'], 
+        //     ['_name' => $routePrefix . 'VendorDashboard']);
+        
     }
 );
 

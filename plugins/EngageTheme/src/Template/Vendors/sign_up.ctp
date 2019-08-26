@@ -10,6 +10,11 @@
     $signInUrl = $this->Url->build([
         '_name'  => $themeFunction->routePrefix() . 'VendorSignIn'
     ]);
+
+    $termAndCondUrl = $this->Url->build([
+        '_name' => 'specificPage',
+        'page'  => 'term-and-conditions'
+    ]);
 ?>
 <?php
     echo $this->Form->create($vendorSignUp, [
@@ -37,7 +42,7 @@ Become a member today to get access to your custom profile and<br>our exclusive 
                         <span class="devider-core"></span>
                     </div>
                     <div class="uk-margin-small uk-width-1-1">
-                        <label class="uk-form-label" for="form-stacked-name">Vendor Name</label>
+                        <label class="uk-form-label" for="form-stacked-name">Vendor Name<span class="required-form-label">*</span></label>
                         <div class="uk-form-controls">
                             <?php
                                 echo $this->Form->text('name', [
@@ -54,7 +59,7 @@ Become a member today to get access to your custom profile and<br>our exclusive 
                     </div>
 
                     <div class="uk-margin-small uk-width-1-1">
-                        <label class="uk-form-label" for="form-stacked-email">Email</label>
+                        <label class="uk-form-label" for="form-stacked-email">Email<span class="required-form-label">*</span></label>
                         <div class="uk-form-controls">
                             <?php
                                 echo $this->Form->text('email', [
@@ -70,7 +75,7 @@ Become a member today to get access to your custom profile and<br>our exclusive 
                     </div>
 
                     <div class="uk-margin-small uk-width-1-1">
-                        <label class="uk-form-label" for="form-stacked-password">Password</label>
+                        <label class="uk-form-label" for="form-stacked-password">Password<span class="required-form-label">*</span></label>
                         <div class="uk-form-controls">
                             <?php
                                 echo $this->Form->password('password', [
@@ -87,7 +92,7 @@ Become a member today to get access to your custom profile and<br>our exclusive 
                     </div>
 
                     <div class="uk-margin-small uk-width-1-1">
-                        <label class="uk-form-label" for="form-stacked-repeatpassword">Repeat Password</label>
+                        <label class="uk-form-label" for="form-stacked-repeatpassword">Repeat Password<span class="required-form-label">*</span></label>
                         <div class="uk-form-controls">
                             <?php
                                 echo $this->Form->password('repeatpassword', [
@@ -112,7 +117,7 @@ Become a member today to get access to your custom profile and<br>our exclusive 
                         <span class="devider-core"></span>
                     </div>
                     <div class="uk-margin-small uk-width-1-1">
-                        <label class="uk-form-label" for="form-stacked-phone">Mobile Phone Number</label>
+                        <label class="uk-form-label" for="form-stacked-phone">Mobile Phone Number<span class="required-form-label">*</span></label>
                         <div class="uk-form-controls">
                             <?php
                                 echo $this->Form->text('phone', [
@@ -126,7 +131,7 @@ Become a member today to get access to your custom profile and<br>our exclusive 
                     </div>
 
                     <div class="uk-margin-small uk-width-1-1">
-                        <label class="uk-form-label" for="form-stacked-name">Address</label>
+                        <label class="uk-form-label" for="form-stacked-name">Address<span class="required-form-label">*</span></label>
                         <div class="uk-form-controls">
                             <?php
                                 echo $this->Form->text('address', [
@@ -142,7 +147,7 @@ Become a member today to get access to your custom profile and<br>our exclusive 
                     </div>
 
                     <div class="uk-margin-small uk-width-1-1">
-                        <label class="uk-form-label" for="form-stacked-province">Province</label>
+                        <label class="uk-form-label" for="form-stacked-province">Province<span class="required-form-label">*</span></label>
                         <div class="uk-form-controls">
                             <?php
                                 echo $this->Form->select(
@@ -162,7 +167,7 @@ Become a member today to get access to your custom profile and<br>our exclusive 
                     </div>
 
                     <div class="uk-margin-small uk-width-1-1">
-                        <label class="uk-form-label" for="form-stacked-city">City</label>
+                        <label class="uk-form-label" for="form-stacked-city">City<span class="required-form-label">*</span></label>
                         <div class="uk-form-controls">
                             <?php
                                 echo $this->Form->select(
@@ -188,7 +193,7 @@ Become a member today to get access to your custom profile and<br>our exclusive 
                     </div>
 
                     <div class="uk-margin-small uk-width-1-1">
-                        <label class="uk-form-label" for="form-stacked-ktp">KTP</label>
+                        <label class="uk-form-label" for="form-stacked-ktp">KTP<span class="required-form-label">*</span></label>
                         <div class="uk-form-controls">
                             <div class="uk-width-1-1" uk-form-custom="target: true">
                                 <?php
@@ -209,7 +214,7 @@ Become a member today to get access to your custom profile and<br>our exclusive 
                         </div>
                     </div>
                     <div class="uk-margin-small uk-width-1-1">
-                        <label class="uk-form-label" for="form-stacked-npwp">NPWP</label>
+                        <label class="uk-form-label" for="form-stacked-npwp">NPWP<span class="required-form-label">*</span></label>
                         <div class="uk-form-controls">
                             <div class="uk-width-1-1" uk-form-custom="target: true">
                                 <?php
@@ -229,6 +234,12 @@ Become a member today to get access to your custom profile and<br>our exclusive 
                             </div>
                         </div>
                     </div>
+                    <div class="uk-margin-small uk-width-1-1">
+                        <label>
+                            <?= $this->Form->checkbox('termconditions', ['class' => 'uk-checkbox']); ?>
+                            I accept the term & conditions.
+                        </label> <a href="<?= $termAndCondUrl ?>" title="Read Term and Conditions" target="_blank" uk-icon="icon: file-edit"></a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -246,7 +257,7 @@ Become a member today to get access to your custom profile and<br>our exclusive 
         <?php
             echo $this->Form->button('Sign up', [
                 'id'    => 'button-sign-up',
-                'class' => 'btn btn-primary btn-block'
+                'class' => 'btn btn-primary btn-block',
             ]);
         ?>
         <p class="text-center"><a class="non-uikit" href="<?= $signInUrl ?>">Already have account? Sign In</a></p>
@@ -296,7 +307,7 @@ Become a member today to get access to your custom profile and<br>our exclusive 
             n = "Bridestiny.signUp",
             o = "redirect",
             a = "<?= $submitRedirect ?>",
-            c = "Sign up",
+            c = "Sign Up",
             r = "Processing...";
         $("#button-sign-up").one("click",function(){ajaxSubmit(t,n,o,a,c,r)})
     })

@@ -17,6 +17,7 @@ namespace App\Controller;
 use Cake\Controller\Controller;
 use Cake\Event\Event;
 use App\Purple\PurpleProjectGlobal;
+use Bridestiny\Form\VendorSignInForm;
 
 /**
  * Application Controller
@@ -45,6 +46,66 @@ class AppController extends Controller
             'enableBeforeRedirect' => false,
         ]);
         $this->loadComponent('Flash');
+
+        $this->loadComponent('Auth', [
+            'loginRedirect' => [
+                'controller' => 'VendorDashboard',
+                'action'     => 'index',
+                'plugin'     => 'Bridestiny',
+                'prefix'     => 'v/dashboard',
+            ],
+            'logoutRedirect' => [
+                '_name' => 'home'
+            ],
+            'loginAction' => [
+                '_name' => 'home'
+            ],
+            'unauthorizedRedirect' => false,
+            'authError' => 'Did you really think you are allowed to see that?',
+            'authenticate' => [
+                'Form' => [
+                    'fields'    => ['username' => 'email', 'password' => 'password'],
+                    'finder'    => 'auth',
+                    'userModel' => 'Bridestiny.BrideVendors',
+                ]
+            ],
+            'storage' => 'Session'
+        ]);
+
+        if ($this->request->getParam('prefix') == 'purple') {
+            $this->Auth->allow();
+        }
+
+        $this->Auth->allow(['setClientTimezone']);
+
+        if (!$this->Auth->user()) {
+            $vendorSignIn = new VendorSignInForm();
+            $this->set('vendorSignIn', $vendorSignIn);
+            $this->set('userData', NULL);
+        }
+        else {
+            $user = $this->Auth->user();
+            $userType = $user['user_type'];
+            $userData = NULL;
+
+            if ($userType == 'vendor') {
+                $this->loadModel('Bridestiny.BrideVendors');
+                $query    = $this->BrideVendors->find()->where(['id' => $user['id'], 'email' => $user['email']])->limit(1)->first();
+                $userData = $query;
+            }
+            elseif ($userType == 'customer') {
+                $this->loadModel('Bridestiny.BrideCustomers');
+                $query    = $this->BrideCustomers->find()->where(['id' => $user['id'], 'email' => $user['email']])->limit(1)->first();
+                $userData = $query;
+            }
+
+            $data = [
+                'userType' => $userType,
+                'userData' => $userData,
+            ];
+
+            $this->set($data);
+        }
 
         if ($this->request->getParam('controller') == 'Setup' || $this->request->getParam('controller') == 'Production') {
 

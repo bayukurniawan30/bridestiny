@@ -50,8 +50,10 @@ class BrideCustomersTable extends Table
 		$entity->last_name  = ucwords(trim($entity->last_name));
 
 		if ($entity->isNew()) {
-			$entity->created  = $date;
-               $entity->status   = '0';
+			$entity->created   = $date;
+               $entity->status    = '0';
+               $entity->user_type = 'customer';
+
                
                $hasher = new DefaultPasswordHasher();
 

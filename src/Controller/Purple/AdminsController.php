@@ -36,7 +36,8 @@ class AdminsController extends AppController
 	}
 	public function initialize()
 	{
-		parent::initialize();
+        parent::initialize();
+        
 		$session = $this->getRequest()->getSession();
 		$sessionHost     = $session->read('Admin.host');
 		$sessionID       = $session->read('Admin.id');

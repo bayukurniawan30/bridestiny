@@ -55,7 +55,13 @@
                         </div>
                     </li>
                     <li><a href="#" class="non-uikit">BLOGS</a></li>
-                    <li><a class="non-uikit link-to-modal-brideme-login" data-brideme-type="vendor" href="#" uk-toggle="target: #modal-brideme-login">ARE YOU A VENDOR?</a></li>
+                    <?php 
+                        if ($userData == NULL):
+                    ?>
+                    <li><a class="non-uikit link-to-modal-brideme-vendor-login" data-brideme-type="vendor" href="#" uk-toggle="target: #modal-brideme-vendor-login">ARE YOU A VENDOR?</a></li>
+                    <?php
+                        endif;
+                    ?>
                     
                     <!-- <li class="search-menu-item">
                         <a href="#"><i class="fa fa-search"></i></a>
@@ -71,16 +77,50 @@
             <div class="header-right float-right w-25">
                 <ul class="header_actions">
                     <li class="">
-                        <a href="#" class="link-to-modal-brideme-login text-black"  data-brideme-type="couple" uk-toggle="target: #modal-brideme-login">
-                            <i class="fa fa-unlock-alt" aria-hidden="true"></i>
+                        <a href="#" class="<?php if ($userData == NULL): ?>link-to-modal-brideme-couples-login<?php endif; ?> text-black" <?php if ($userData == NULL): ?>uk-toggle="target: #modal-brideme-couples-login"<?php endif; ?>>
+                            <?php if ($userData != NULL) echo $userData->full_name ?> <?php if ($userData == NULL): ?><i class="fa fa-unlock-alt" aria-hidden="true"></i><?php endif; ?>
                         </a>
+
+                        <?php if ($userData != NULL): ?>
+                        <?php
+                            if ($userType == 'vendor') {
+                                $logOutUrl = $this->Url->build([
+                                    '_name'  => $themeFunction->routePrefix() . 'VendorDashboardAction',
+                                    'action' => 'logout'
+                                ]);
+                            }
+                        ?>
+                        <div class="" uk-dropdown="mode: click; offset: 16;">
+                            <ul class="uk-nav uk-dropdown-nav bridestiny-signed-in-dropdown">
+                                <li class="">
+                                    <div class="uk-grid-small uk-flex-middle" uk-grid>
+                                        <div class="uk-width-auto">
+                                            <img class="<?php if ($userData->photo == NULL) echo 'initial-photo'; ?> uk-border-circle" width="40" height="40" <?php if ($userData->photo != NULL): ?>src="<?= $this->request->getAttribute("webroot") . 'uploads/images/original/' . $userData->photo ?>"<?php endif; ?> data-height="40" data-width="40" data-char-count="2" data-font-size="20" data-name="<?= $userData->full_name ?>">
+                                        </div>
+                                        <div class="uk-width-expand">
+                                            <h5 class="uk-card-title uk-margin-remove-bottom"><?= $userData->full_name ?></h5>
+                                            <p class="uk-text-meta uk-margin-remove-top"><small><?= $userData->bride_type ?></small></p>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="p-0 ml-0" style=""><a class="non-uikit text-black" href="#">Dashboard</a></li>
+                                <li class="p-0 ml-0"><a class="non-uikit text-black" href="<?= $logOutUrl ?>">Logout</a></li>
+                            </ul>
+                        </div>
+                        <?php endif; ?>
                     </li>
+                    <?php 
+                        if ($userData == NULL || ($userData != NULL && $userType == 'customer')):
+                    ?>
                     <li class="header-currency-divider text-black">|</li>
                     <li class="">
                         <a href="#" class="text-black">
                             <i class="fa fa-shopping-cart" aria-hidden="true"></i>
                         </a>
                     </li>
+                    <?php
+                        endif;
+                    ?>
                     <li class="header-currency-divider text-black">|</li>
                     <?php
                         // Element/Header/currency_lists.ctp

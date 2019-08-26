@@ -1,37 +1,16 @@
 $(document).ready(function(){
-    $('.link-to-modal-brideme-login').on('click', function() {
+    $('.link-to-modal-brideme-couples-login').on('click', function() {
         var element  = $(this),
-            type     = element.attr('data-brideme-type'),
-            modal    = '#modal-brideme-login',
-            switcher = '#switcher-brideme-login';
+            modal    = '#modal-brideme-couples-login';
+        
+        UIkit.modal(modal).show();
+        return false;
+    })
 
-        if (type == 'vendor') {
-            var index = 1;
-            $('.brideme-login-tab').find('.brideme-login-tab-vendors').addClass('uk-active');
-        }
-        else if (type == 'couple') {
-            index = 0;
-            $('.brideme-login-tab').find('.brideme-login-tab-couples').addClass('uk-active');
-        }
-        else {
-            index = 0;
-            $('.brideme-login-tab').find('.brideme-login-tab-couples').addClass('uk-active');
-        }
-
-        UIkit.switcher(switcher).show(index);
-
-        $('.brideme-login-tab').find('li').removeClass('uk-active');
-        if (type == 'vendor') {
-            $('.brideme-login-tab').find('.brideme-login-tab-vendors').addClass('uk-active');
-            $('.brideme-login-tab').find('.brideme-login-tab-vendors').attr('aria-expanded', 'true');
-            $('.brideme-login-tab').find('.brideme-login-tab-couples').attr('aria-expanded', 'false');
-        }
-        else if (type == 'couple') {
-            $('.brideme-login-tab').find('.brideme-login-tab-couples').addClass('uk-active');
-            $('.brideme-login-tab').find('.brideme-login-tab-couples').attr('aria-expanded', 'true');
-            $('.brideme-login-tab').find('.brideme-login-tab-vendors').attr('aria-expanded', 'false');
-        }
-
+    $('.link-to-modal-brideme-vendor-login').on('click', function() {
+        var element  = $(this),
+            modal    = '#modal-brideme-vendor-login';
+        
         UIkit.modal(modal).show();
         return false;
     })

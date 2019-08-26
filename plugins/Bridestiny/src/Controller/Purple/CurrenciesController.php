@@ -33,6 +33,7 @@ class CurrenciesController extends AppController
     public function initialize()
 	{
         parent::initialize();
+
         $this->loadComponent('RequestHandler');
 		$session = $this->getRequest()->getSession();
 		$sessionHost     = $session->read('Admin.host');
