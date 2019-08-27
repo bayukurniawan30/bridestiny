@@ -1,6 +1,6 @@
 <?php
 
-namespace Bridestiny\Controller\V\Dashboard;
+namespace Bridestiny\Controller\c\Dashboard;
 
 use Bridestiny\Controller\AppController;
 use Cake\Core\Configure;
@@ -26,7 +26,7 @@ use Bulletproof;
 use Gregwar\Image\Image;
 use \Gumlet\ImageResize;
 
-class VendorDashboardController extends AppController
+class CustomerDashboardController extends AppController
 {
     public function beforeFilter(Event $event)
     {
@@ -68,8 +68,8 @@ class VendorDashboardController extends AppController
         $this->loadModel('Visitors');
         $this->loadModel('Socials');
 
-        $this->loadModel('Bridestiny.BrideVendors');
-        $this->loadModel('Bridestiny.BrideVendorMedias');
+        $this->loadModel('Bridestiny.BrideCustomers');
+        $this->loadModel('Bridestiny.BrideCustomerMedias');
         $this->loadModel('Bridestiny.BrideNotifications');
         $this->loadModel('Bridestiny.BrideSettings');
 
@@ -172,7 +172,6 @@ class VendorDashboardController extends AppController
 
         $data = [
             'pageTitle'          => 'Dashboard',
-            'breadcrumb'         => 'Home::Dashboard',
             'childPage'          => false,
             'siteName'           => $this->Settings->settingsSiteName(),
             'tagLine'            => $this->Settings->settingsTagLine(),
@@ -199,14 +198,11 @@ class VendorDashboardController extends AppController
             'ldJsonOrganization' => $orgSchema
         ];
         $this->set($data);
-
-        // Vendor Data
-        $vendorData = $this->BrideVendors->find()->where(['id' => $this->Auth->user('id')])->first();
-        $this->set('vendorData', $vendorData);
     }
     public function index()
     {
-        
+        $user = $this->Auth->user();
+        $this->set('user', $user);
     }
     public function logout()
     {

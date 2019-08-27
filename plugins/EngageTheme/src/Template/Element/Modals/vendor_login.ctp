@@ -24,6 +24,8 @@
                         'data-parsley-validate' => '',
                         'url'                   => ['_name' => $themeFunction->routePrefix() . 'VendorAjaxSignIn']
                     ]);
+
+                    echo $this->Form->hidden('user_signin_type', ['value' => 'vendor']);
                 ?>
                 <fieldset class="uk-fieldset">
                     <div class="uk-margin">

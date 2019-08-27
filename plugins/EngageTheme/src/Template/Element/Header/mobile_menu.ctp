@@ -36,9 +36,46 @@
                     </ul>
                 </li>
                 <li><a href="#" class="non-uikit">BLOGS</a></li>
-                <li style="clear: both"><a href="#" class="non-uikit">ARE YOU A VENDOR?</a></li>
-                <li><a href="#" class="non-uikit link-to-modal-brideme-login" data-brideme-type="couple" uk-toggle="target: #modal-brideme-login"><span class="login-wedding-descmobile">Login</span></a></li>
+                <?php 
+                    if ($userData == NULL):
+                ?>
+                <li style="clear: both"><a href="#" class="non-uikit link-to-modal-brideme-vendor-login" data-brideme-type="vendor" href="#" uk-toggle="target: #modal-brideme-vendor-login">ARE YOU A VENDOR?</a></li>
+                <?php
+                    endif;
+                ?>
+
+                <?php if ($userData != NULL): ?>
+                <?php
+                    if ($userType == 'vendor') {
+                        $dashboardUrl = $this->Url->build([
+                            '_name'  => $themeFunction->routePrefix() . 'VendorDashboard'
+                        ]);
+
+                        $logOutUrl = $this->Url->build([
+                            '_name'  => $themeFunction->routePrefix() . 'VendorDashboardAction',
+                            'action' => 'logout'
+                        ]);
+                    }
+                ?>
+                <li><a href="<?= $dashboardUrl ?>" class="non-uikit link-to-modal-brideme-couples-login" data-brideme-type="couples" uk-toggle="target: #modal-brideme-couples-login"><span class="login-wedding-descmobile"><i class="fa fa-dashboard"></i> <?= $userData->full_name ?></span></a></li>
+
+                <li><a href="<?= $logOutUrl ?>" class="non-uikit"><span class="login-wedding-descmobile"><i class="fa fa-sign-out"></i> Logout</span></a></li>                
+                <?php
+                    else:
+                ?>
+                <li><a href="#" class="non-uikit link-to-modal-brideme-couples-login" data-brideme-type="couples" uk-toggle="target: #modal-brideme-couples-login"><span class="login-wedding-descmobile">Login</span></a></li>
+
+                <?php
+                    endif;
+                ?>
+
+                <?php 
+                    if ($userData == NULL || ($userData != NULL && $userType == 'customer')):
+                ?>
                 <li><a href="#" class="non-uikit"><span class="login-wedding-descmobile">Cart</span></a></li>
+                <?php
+                    endif;
+                ?>
                 <!-- <li>
                     <form class="mobile-search-form" method="get">
                         <input type="text" name="s" placeholder="SEARCH" />

@@ -18,8 +18,14 @@
 		</div>
 
 		<!-- Modals -->
+		<?php 
+			if ($userData == NULL):
+		?>
 		<?= $this->element('Modals/couples_login') ?>
 		<?= $this->element('Modals/vendor_login') ?>
+		<?php
+			endif;
+		?>
 
 		<?= $this->element('script') ?>
   	</body>

@@ -78,12 +78,16 @@
                 <ul class="header_actions">
                     <li class="">
                         <a href="#" class="<?php if ($userData == NULL): ?>link-to-modal-brideme-couples-login<?php endif; ?> text-black" <?php if ($userData == NULL): ?>uk-toggle="target: #modal-brideme-couples-login"<?php endif; ?>>
-                            <?php if ($userData != NULL) echo $userData->full_name ?> <?php if ($userData == NULL): ?><i class="fa fa-unlock-alt" aria-hidden="true"></i><?php endif; ?>
+                            <?php if ($userData != NULL) echo '<span class="uk-text-bold">' . $userData->full_name . '</span>' ?> <?php if ($userData == NULL): ?><i class="fa fa-unlock-alt" aria-hidden="true"></i><?php endif; ?>
                         </a>
 
                         <?php if ($userData != NULL): ?>
                         <?php
                             if ($userType == 'vendor') {
+                                $dashboardUrl = $this->Url->build([
+                                    '_name'  => $themeFunction->routePrefix() . 'VendorDashboard'
+                                ]);
+
                                 $logOutUrl = $this->Url->build([
                                     '_name'  => $themeFunction->routePrefix() . 'VendorDashboardAction',
                                     'action' => 'logout'
@@ -103,7 +107,7 @@
                                         </div>
                                     </div>
                                 </li>
-                                <li class="p-0 ml-0" style=""><a class="non-uikit text-black" href="#">Dashboard</a></li>
+                                <li class="p-0 ml-0" style=""><a class="non-uikit text-black" href="<?= $dashboardUrl ?>">Dashboard</a></li>
                                 <li class="p-0 ml-0"><a class="non-uikit text-black" href="<?= $logOutUrl ?>">Logout</a></li>
                             </ul>
                         </div>

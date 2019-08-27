@@ -67,5 +67,13 @@ class BrideCustomersTable extends Table
 		else {
 			$entity->modified = $date;
 		}
-	}
+     }
+     public function findAuth(\Cake\ORM\Query $query, array $options)
+     {
+          $query
+               ->select(['id', 'email', 'password', 'user_type'])
+               ->where(['BrideCustomers.status' => 1]);
+
+          return $query;
+     }
 }

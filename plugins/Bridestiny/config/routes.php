@@ -22,6 +22,7 @@ Router::plugin(
         $globalFunction = new GlobalFunctions();
         $routePrefix    = $globalFunction->routePrefix();
 
+        // Vendor Dashboard
         $routes->prefix('v', function ($routes) use ($routePrefix) {
             $routes->prefix('dashboard', function ($routes) use ($routePrefix) {
                 $routes->connect('/', 
@@ -31,6 +32,19 @@ Router::plugin(
                 $routes->connect('/:action', 
                     ['controller' => 'VendorDashboard'],
                     ['_name' => $routePrefix . 'VendorDashboardAction']);
+            });
+        });
+
+        // Customer Dashboard
+        $routes->prefix('c', function ($routes) use ($routePrefix) {
+            $routes->prefix('dashboard', function ($routes) use ($routePrefix) {
+                $routes->connect('/', 
+                    ['controller' => 'CustomerDashboard', 'action' => 'index'],
+                    ['_name' => $routePrefix . 'CustomerDashboard']);
+
+                $routes->connect('/:action', 
+                    ['controller' => 'CustomerDashboard'],
+                    ['_name' => $routePrefix . 'CustomerDashboardAction']);
             });
         });
 
