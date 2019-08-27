@@ -280,7 +280,7 @@ class VendorsController extends AppController
                         'sitePhone'   => $this->Settings->settingsAddress(),
                     );
                     $senderData   = array(
-                        'domain' => $this->request->domain()
+                        'domain' => $this->request->host()
                     );
                     $bridestinyApi = new BridestinyApi();
                     $notifyUser    = $bridestinyApi->sendEmailVendorConfirmation($key, $dashboardLink, json_encode($userData), json_encode($siteData), json_encode($senderData));
@@ -381,7 +381,7 @@ class VendorsController extends AppController
                         'sitePhone'   => $this->Settings->settingsAddress(),
                     );
                     $senderData   = array(
-                        'domain' => $this->request->domain()
+                        'domain' => $this->request->host()
                     );
                     $bridestinyApi = new BridestinyApi();
                     $notifyUser    = $bridestinyApi->sendEmailVendorDeclined($key, json_encode($userData), json_encode($siteData), json_encode($senderData));

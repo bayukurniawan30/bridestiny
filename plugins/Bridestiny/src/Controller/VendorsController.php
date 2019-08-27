@@ -121,7 +121,7 @@ class VendorsController extends AppController
                 );
                 $senderData   = array(
                     'total'   => $totalAllVisitors,
-                    'domain'  => $this->request->domain()
+                    'domain'  => $this->request->host()
                 );
                 $notifyUser = $purpleApi->sendEmailCertainVisitors($key, json_encode($userData), json_encode($senderData));
 
@@ -454,7 +454,7 @@ class VendorsController extends AppController
                                     'sitePhone'   => $this->Settings->settingsAddress(),
                                 );
                                 $senderData   = array(
-                                    'domain' => $this->request->domain()
+                                    'domain' => $this->request->host()
                                 );
                                 $bridestinyApi = new BridestinyApi();
                                 $notifyUser    = $bridestinyApi->sendEmailVendorVerification($key, json_encode($userData), json_encode($siteData), json_encode($senderData));
@@ -525,7 +525,7 @@ class VendorsController extends AppController
                             'name'   => $vendor->name,
                             'email'  => $vendor->email,
                             'phone'  => $vendor->mobile_phone,
-                            'domain' => $this->request->domain()
+                            'domain' => $this->request->host()
                         );
 
                         $bridestinyApi = new BridestinyApi();
