@@ -51,6 +51,7 @@ class VendorsController extends AppController
             $this->loadModel('Admins');
             $this->loadModel('Settings');
 
+            $this->loadModel('Bridestiny.BrideAuth');
             $this->loadModel('Bridestiny.BrideVendors');
             $this->loadModel('Bridestiny.BrideVendorAbout');
             $this->loadModel('Bridestiny.BrideVendorFaqs');
@@ -125,19 +126,21 @@ class VendorsController extends AppController
     }
     public function index() 
     {
-        $vendors = $this->BrideVendors->find('all')->order(['id' => 'DESC']);
+        $vendors = $this->BrideVendors->find('all')->contain('BrideAuth')->where(['BrideAuth.user_type' => 'vendor'])->order(['BrideVendors.id' => 'DESC']);
         $this->set(compact('vendors'));
 
         $unverified = $this->BrideVendors->countVendorStatus("0");
-        $verified   = $this->BrideVendors->countVendorStatus("1");
+        $verified   = $this->BrideVendors->countVendorStatus("3");
         $banned     = $this->BrideVendors->countVendorStatus("2");
-        $active     = $this->BrideVendors->countVendorStatus("3");
+        $active     = $this->BrideVendors->countVendorStatus("1");
+        $declined   = $this->BrideVendors->countVendorStatus("4");
 
         $data = [
             "unverified" => $unverified,
             "verified"   => $verified,
             "banned"     => $banned,
-            "active"     => $active
+            "active"     => $active,
+            "declined"   => $declined
         ];
 
         $this->set($data);
@@ -145,35 +148,40 @@ class VendorsController extends AppController
     public function filter($filter) 
     {
         $filter = trim($filter);
-        $availableFilter = ['unverified', 'verified', 'banned', 'active'];
+        $availableFilter = ['unverified', 'verified', 'banned', 'active', 'declined'];
 
         if (in_array($filter, $availableFilter)) {
             if ($filter == 'unverified') {
                 $status = '0';
             }
             elseif ($filter == 'verified') {
-                $status = '1';
+                $status = '3';
             }
             elseif ($filter == 'banned') {
                 $status = '2';
             }
             elseif ($filter == 'active') {
-                $status = '3';
+                $status = '1';
+            }
+            elseif ($filter == 'declined') {
+                $status = '4';
             }
 
-            $vendors = $this->BrideVendors->find('all')->where(['status' => $status])->order(['id' => 'DESC']);
+            $vendors = $this->BrideVendors->find('all')->contain('BrideAuth')->where(['BrideAuth.status' => $status, 'BrideAuth.user_type' => 'vendor'])->order(['BrideVendors.id' => 'DESC']);
             $this->set(compact('vendors'));
 
             $unverified = $this->BrideVendors->countVendorStatus("0");
-            $verified   = $this->BrideVendors->countVendorStatus("1");
+            $verified   = $this->BrideVendors->countVendorStatus("3");
             $banned     = $this->BrideVendors->countVendorStatus("2");
-            $active     = $this->BrideVendors->countVendorStatus("3");
+            $active     = $this->BrideVendors->countVendorStatus("1");
+            $declined   = $this->BrideVendors->countVendorStatus("4");
 
             $data = [
                 "unverified" => $unverified,
                 "verified"   => $verified,
                 "banned"     => $banned,
-                "active"     => $active
+                "active"     => $active,
+                "declined"   => $declined
             ];
 
             $this->set($data);
@@ -184,7 +192,7 @@ class VendorsController extends AppController
     }
     public function detail($id)
     {
-        $vendors = $this->BrideVendors->find('all')->where(['id' => $id])->limit(1);
+        $vendors = $this->BrideVendors->find('all')->contain('BrideAuth')->where(['BrideVendors.id' => $id])->limit(1);
         if ($vendors->count() > 0) {
             $vendorConfirm = new VendorConfirmForm();
             $vendorReject  = new VendorRejectForm();
@@ -200,7 +208,7 @@ class VendorsController extends AppController
     }
     public function detailPage($id, $page)
     {
-        $vendors = $this->BrideVendors->find('all')->where(['id' => $id])->limit(1);
+        $vendors = $this->BrideVendors->find('all')->contain('BrideAuth')->where(['BrideVendors.id' => $id])->limit(1);
         if ($vendors->count() > 0) {
             $vendor = $vendors->first();
             $this->set('vendor', $vendor);
@@ -243,14 +251,14 @@ class VendorsController extends AppController
                 $session   = $this->getRequest()->getSession();
                 $sessionID = $session->read('Admin.id');
 
-                $vendor         = $this->BrideVendors->get($this->request->getData('id'));
-                $vendorName     = $vendor->name;
-                $vendor         = $this->BrideVendors->patchEntity($vendor, $this->request->getData());
-                $vendor->status = '3';
+                $vendor       = $this->BrideVendors->get($this->request->getData('id'));
+                $auth         = $this->BrideAuth->get($vendor->auth_id);
+                $vendorName   = $vendor->name;
+                $auth         = $this->BrideAuth->patchEntity($auth, $this->request->getData());
+                $auth->status = '1';
 
-                if ($this->BrideVendors->save($vendor)) {
-                    $recordId = $vendor->id;
-                    $vendor   = $this->BrideVendors->get($recordId);
+                if ($this->BrideAuth->save($auth)) {
+                    $vendor = $this->BrideVendors->find('all')->contain('BrideAuth')->where(['BrideVendors.id' => $this->request->getData('id')])->first();
 
                     // Send Email to User to Notify user
                     $key    = $this->Settings->settingsPublicApiKey();
@@ -258,7 +266,7 @@ class VendorsController extends AppController
                     $userData      = array(
                         'sitename'    => $this->Settings->settingsSiteName(),
                         'displayName' => $vendor->name,
-                        'email'       => $vendor->email,
+                        'email'       => $vendor->bride_auth->email,
                     );
 
                     $purpleGlobal = new PurpleProjectGlobal();

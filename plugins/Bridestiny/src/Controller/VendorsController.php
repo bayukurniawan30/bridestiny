@@ -73,6 +73,7 @@ class VendorsController extends AppController
         $this->loadModel('Visitors');
         $this->loadModel('Socials');
 
+        $this->loadModel('Bridestiny.BrideAuth');
         $this->loadModel('Bridestiny.BrideVendors');
         $this->loadModel('Bridestiny.BrideVendorMedias');
         $this->loadModel('Bridestiny.BrideNotifications');
@@ -375,7 +376,7 @@ class VendorsController extends AppController
 
                 if ($this->request->getData('termconditions')) {
                     $userId = Text::slug(strtolower(trim($this->request->getData('name'))));
-                    $find   = $this->BrideVendors->find()->where(['email' => trim($this->request->getData('email'))]);
+                    $find   = $this->BrideAuth->find()->where(['email' => trim($this->request->getData('email'))]);
                     if ($find->count() > 0) {
                         $json = json_encode(['status' => 'error', 'error' => "Email is already used. Please use another email."]);
                     }
@@ -389,84 +390,95 @@ class VendorsController extends AppController
                             // Generate 6 digits code
                             $code = rand(100000, 999999);
 
-                            $vendor = $this->BrideVendors->newEntity();
-                            $vendor = $this->BrideVendors->patchEntity($vendor, $this->request->getData());
-                            $vendor->ktp  = 'uploading';
-                            $vendor->npwp = 'uploading'; 
-                            if ($findUserId->count() > 0) {
-                                $randomUserId = rand(100, 999);
-                                $sluggedTitle = Text::slug(strtolower($this->request->getData('name').'-'.$randomUserId));
-                                $vendor->user_id = $sluggedTitle; 
-                            }
-                            else {
-                                $sluggedTitle = Text::slug(strtolower($this->request->getData('name')));
-                                $vendor->user_id = $sluggedTitle;
-                            }
-
-                            if ($this->request->getData('country') != 'Indonesia') {
-                                $vendor->province = 'none';
-                                $vendor->city     = 'none';
-                            }
-                            $vendor->status = '0';
-
-                            if ($this->BrideVendors->save($vendor)) {
-                                $recordId = $vendor->id;
-
-                                $vendor = $this->BrideVendors->get($recordId);
-                                $uploadKtp  = $this->uploadImages($this->request->getData('ktp'), $recordId);
-                                $uploadNpwp = $this->uploadImages($this->request->getData('npwp'), $recordId);
-
-                                if ($uploadKtp != false && $uploadNpwp != false) {
-                                    $vendor->ktp  = $uploadKtp;
-                                    $vendor->npwp = $uploadNpwp;
-
-                                    $this->BrideVendors->save($vendor);
-                                }
-
-                                $session->write('Bridestiny.verificationcode', $code);
-                                $session->write('Bridestiny.vendorId', $recordId);
-
-                                // Send Email to User to Notify user
-                                $hasher = new DefaultPasswordHasher();
-                                $key    = $hasher->hash('public-purple is awesome');
-                                $userData      = array(
-                                    'sitename'    => $this->Settings->settingsSiteName(),
-                                    'email'       => $vendor->email,
-                                    'code'        => $code
-                                );
-
-                                $purpleGlobal = new PurpleProjectGlobal();
-                                $protocol     = $purpleGlobal->protocol();
-                                
-                                if ($this->Settings->settingsLogo() == '') {
-                                    $siteLogo = $protocol.$this->request->getEnv('HTTP_HOST').$this->request->getAttribute('webroot').'master-assets/img/logo.svg';
+                            $auth = $this->BrideAuth->newEntity();
+                            $auth = $this->BrideAuth->patchEntity($auth, $this->request->getData());
+                            $auth->user_type = 'vendor';
+                            $auth->status    = 0;
+                            
+                            if ($this->BrideAuth->save($auth)) {
+                                $recordId = $auth->id;
+                                $vendor   = $this->BrideVendors->newEntity();
+                                $vendor   = $this->BrideVendors->patchEntity($vendor, $this->request->getData());
+                                $vendor->auth_id = $recordId;
+                                $vendor->ktp     = 'uploading';
+                                $vendor->npwp    = 'uploading'; 
+                                if ($findUserId->count() > 0) {
+                                    $randomUserId = rand(100, 999);
+                                    $sluggedTitle = Text::slug(strtolower($this->request->getData('name').'-'.$randomUserId));
+                                    $vendor->user_id = $sluggedTitle; 
                                 }
                                 else {
-                                    $siteLogo = $protocol.$this->request->getEnv('HTTP_HOST').$this->request->getAttribute('webroot').'uploads/images/original/'.$this->Settings->settingsLogo();
+                                    $sluggedTitle = Text::slug(strtolower($this->request->getData('name')));
+                                    $vendor->user_id = $sluggedTitle;
                                 }
 
-                                $siteData = array(
-                                    'siteLogo'    => $siteLogo,
-                                    'siteName'    => $this->Settings->settingsSiteName(),
-                                    'siteTagline' => $this->Settings->settingsTagLine(),
-                                    'siteEmail'   => $this->Settings->settingsEmail(),
-                                    'siteAddress' => $this->Settings->settingsPhone(),
-                                    'sitePhone'   => $this->Settings->settingsAddress(),
-                                );
-                                $senderData   = array(
-                                    'domain' => $this->request->host()
-                                );
-                                $bridestinyApi = new BridestinyApi();
-                                $notifyUser    = $bridestinyApi->sendEmailVendorVerification($key, json_encode($userData), json_encode($siteData), json_encode($senderData));
+                                if ($this->request->getData('country') != 'Indonesia') {
+                                    $vendor->province = 'none';
+                                    $vendor->city     = 'none';
+                                }
 
-                                if ($notifyUser == true) {
-                                    $emailNotification = true;
+                                if ($this->BrideVendors->save($vendor)) {
+                                    $recordId = $vendor->id;
+
+                                    $vendor = $this->BrideVendors->get($recordId);
+                                    $uploadKtp  = $this->uploadImages($this->request->getData('ktp'), $recordId);
+                                    $uploadNpwp = $this->uploadImages($this->request->getData('npwp'), $recordId);
+
+                                    if ($uploadKtp != false && $uploadNpwp != false) {
+                                        $vendor->ktp  = $uploadKtp;
+                                        $vendor->npwp = $uploadNpwp;
+
+                                        $this->BrideVendors->save($vendor);
+                                    }
+
+                                    $session->write('Bridestiny.verificationcode', $code);
+                                    $session->write('Bridestiny.vendorId', $auth->id);
+
+                                    // Send Email to User to Notify user
+                                    $hasher = new DefaultPasswordHasher();
+                                    $key    = $hasher->hash('public-purple is awesome');
+                                    $userData      = array(
+                                        'sitename'    => $this->Settings->settingsSiteName(),
+                                        'email'       => $auth->email,
+                                        'code'        => $code
+                                    );
+
+                                    $purpleGlobal = new PurpleProjectGlobal();
+                                    $protocol     = $purpleGlobal->protocol();
+                                    
+                                    if ($this->Settings->settingsLogo() == '') {
+                                        $siteLogo = $protocol.$this->request->getEnv('HTTP_HOST').$this->request->getAttribute('webroot').'master-assets/img/logo.svg';
+                                    }
+                                    else {
+                                        $siteLogo = $protocol.$this->request->getEnv('HTTP_HOST').$this->request->getAttribute('webroot').'uploads/images/original/'.$this->Settings->settingsLogo();
+                                    }
+
+                                    $siteData = array(
+                                        'siteLogo'    => $siteLogo,
+                                        'siteName'    => $this->Settings->settingsSiteName(),
+                                        'siteTagline' => $this->Settings->settingsTagLine(),
+                                        'siteEmail'   => $this->Settings->settingsEmail(),
+                                        'siteAddress' => $this->Settings->settingsPhone(),
+                                        'sitePhone'   => $this->Settings->settingsAddress(),
+                                    );
+                                    $senderData   = array(
+                                        'domain' => $this->request->host()
+                                    );
+                                    $bridestinyApi = new BridestinyApi();
+                                    $notifyUser    = $bridestinyApi->sendEmailVendorVerification($key, json_encode($userData), json_encode($siteData), json_encode($senderData));
+
+                                    if ($notifyUser == true) {
+                                        $emailNotification = true;
+                                    }
+                                    else {
+                                        $emailNotification = false;
+                                    }
+
+                                    $json = json_encode(['status' => 'ok', 'notification' => false, 'email' => $emailNotification]);
                                 }
                                 else {
-                                    $emailNotification = false;
+                                    $json = json_encode(['status' => 'error', 'error' => "Can't save data. Please try again."]);
                                 }
-
-                                $json = json_encode(['status' => 'ok', 'notification' => false, 'email' => $emailNotification]);
                             }
                             else {
                                 $json = json_encode(['status' => 'error', 'error' => "Can't save data. Please try again."]);
@@ -505,16 +517,18 @@ class VendorsController extends AppController
                 $sessionVendorId = $session->read('Bridestiny.vendorId');
 
                 if ($code == $sessionCode) {
-                    $vendor = $this->BrideVendors->get($sessionVendorId);
-					$vendor->status = '1';
-					if ($this->BrideVendors->save($vendor)) {
+                    $auth = $this->BrideAuth->get($sessionVendorId);
+					$auth->status = 3;
+					if ($this->BrideAuth->save($auth)) {
                         /**
                          * Save data to Notifications Table
                          */
+                        $vendor = $this->BrideVendors->find('all')->contain('BrideAuth')->where(['BrideVendors.auth_id' => $auth->id])->first();
+
                         $notification = $this->BrideNotifications->newEntity();
                         $notification->type        = 'Vendors.new';
                         $notification->content     = $vendor->name.' has registered to become a new vendor. Click to review the vendor.';
-                        $notification->relation_id = $sessionVendorId;
+                        $notification->relation_id = $vendor->id;
 
                         // Send Email to User to Notify author
                         $admins = $this->Admins->find();
@@ -523,7 +537,7 @@ class VendorsController extends AppController
                         
                         $vendorData    = array(
                             'name'   => $vendor->name,
-                            'email'  => $vendor->email,
+                            'email'  => $vendor->bride_auth->email,
                             'phone'  => $vendor->mobile_phone,
                             'domain' => $this->request->host()
                         );

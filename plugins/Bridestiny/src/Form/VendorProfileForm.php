@@ -5,7 +5,7 @@ use Cake\Form\Form;
 use Cake\Form\Schema;
 use Cake\Validation\Validator;
 
-class VendorSignUpForm extends Form
+class VendorProfileForm extends Form
 {
     protected function _buildValidator(Validator $validator)
     {
@@ -25,38 +25,10 @@ class VendorSignUpForm extends Form
                         ]
                     ])
                   ->requirePresence([
-                    'password' => [
-                        'message' => 'Password is required',
+                    'user_id' => [
+                        'message' => 'Vendor ID is required',
                     ]])
-                  ->notEmpty('password', 'Password is required')
-                  ->add('password', [
-                        'size' => [
-                            'rule'    => ['lengthBetween', 6, 20],
-                            'message' => 'Password need to be at least 6 characters and maximum 20 characters'
-                        ]
-                    ])
-                  ->requirePresence([
-                    'repeatpassword' => [
-                        'message' => 'Repeat Password is required',
-                    ]])
-                  ->notEmpty('repeatpassword', 'Repeat Password')
-                  ->add('repeatpassword', [
-                        'size'    => [
-                            'rule'    => ['lengthBetween', 6, 20],
-                            'message' => 'Password need to be at least 6 characters and maximum 20 characters'
-                        ]
-                    ])
-                  ->requirePresence([
-                    'email' => [
-                        'message' => 'Email is required',
-                    ]])
-                  ->notEmpty('email', 'Email is required')
-                  ->add('email', [
-                        'validFormat' => [
-                            'rule'    => 'email',
-                            'message' => 'Email must be in valid format',
-                        ]
-                    ])
+                  ->notEmpty('user_id', 'Vendor ID is required')
                   ->requirePresence([
                     'phone' => [
                         'message' => 'Phone is required',
@@ -88,26 +60,21 @@ class VendorSignUpForm extends Form
                     ]])
                   ->notEmpty('city', 'City is required')
                   ->requirePresence([
-                    'ktp' => [
-                        'message' => 'KTP is required',
+                    'bride_vendor_about' => [
+                        'message' => 'About is required',
                     ]])
-                  ->notEmpty('ktp', 'KTP is required')
+                  ->notEmpty('bride_vendor_about', 'About is required')
                   ->requirePresence([
-                    'ktp_number' => [
-                        'message' => 'KTP number is required',
+                    'id' => [
+                        'message' => 'Vendor id is required',
                     ]])
-                  ->notEmpty('ktp_number', 'KTP number is required')
-                  ->requirePresence([
-                    'npwp' => [
-                        'message' => 'NPWP is required',
-                    ]])
-                  ->notEmpty('npwp', 'NPWP is required')
-                  ->requirePresence([
-                    'npwp_number' => [
-                        'message' => 'NPWP number is required',
-                    ]])
-                  ->notEmpty('npwp_number', 'NPWP number is required')
-                  ->allowEmpty('photo');
+                  ->notEmpty('id', 'Vendor id is required')
+                  ->add('id', [
+                        'isInteger' => [
+                            'rule'    => ['isInteger'],
+                            'message' => 'Vendor id must be an integer value'
+                        ]
+                    ]);
 
         return $validator;
     }

@@ -48,6 +48,7 @@ class BrideCustomersTable extends Table
 		// Sanitize and capitalize name
 		$entity->first_name = ucwords(trim($entity->first_name));
 		$entity->last_name  = ucwords(trim($entity->last_name));
+		$entity->phone      = str_replace('_', '', trim($entity->phone));
 
 		if ($entity->isNew()) {
 			$entity->created   = $date;
@@ -68,12 +69,10 @@ class BrideCustomersTable extends Table
 			$entity->modified = $date;
 		}
      }
-     public function findAuth(\Cake\ORM\Query $query, array $options)
-     {
-          $query
-               ->select(['id', 'email', 'password', 'user_type'])
-               ->where(['BrideCustomers.status' => 1]);
-
-          return $query;
+     public function countCustomerStatus($status)
+	{
+		$vendors = $this->find('all')->contain('BrideAuth')->where(['BrideAuth.status' => $status, 'BrideAuth.user_type' => 'customer']);
+		$total   = $vendors->count();
+		return $total;
      }
 }

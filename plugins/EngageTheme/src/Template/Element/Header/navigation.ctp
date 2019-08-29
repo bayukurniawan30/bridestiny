@@ -99,7 +99,7 @@
                                 <li class="">
                                     <div class="uk-grid-small uk-flex-middle" uk-grid>
                                         <div class="uk-width-auto">
-                                            <img class="<?php if ($userData->photo == NULL) echo 'initial-photo'; ?> uk-border-circle" width="40" height="40" <?php if ($userData->photo != NULL): ?>src="<?= $this->request->getAttribute("webroot") . 'uploads/images/original/' . $userData->photo ?>"<?php endif; ?> data-height="40" data-width="40" data-char-count="2" data-font-size="20" data-name="<?= $userData->full_name ?>">
+                                            <img class="<?php if ($userData->photo == NULL) echo 'initial-photo'; ?> uk-border-circle" width="40" height="40" <?php if ($userData->photo != NULL): ?>src="<?= $this->request->getAttribute("webroot") . 'uploads/images/original/' . $userData->photo ?>"<?php endif; ?> data-height="40" data-width="40" data-char-count="2" data-font-size="15" data-name="<?= $userData->full_name ?>">
                                         </div>
                                         <div class="uk-width-expand">
                                             <h5 class="uk-card-title uk-margin-remove-bottom"><?= $userData->full_name ?></h5>

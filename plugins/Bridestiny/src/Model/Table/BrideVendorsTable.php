@@ -17,19 +17,22 @@ class BrideVendorsTable extends Table
 	{
 		$this->setTable('bride_vendors');
           $this->setPrimaryKey('id');
+          $this->belongsTo('Bridestiny.BrideAuth')
+		     ->setForeignKey('auth_id')
+               ->setJoinType('INNER');
           $this->hasMany('Bridestiny.BrideReviews')
                ->setForeignKey('vendor_id');
           $this->hasMany('Bridestiny.BrideVendorPosts')
                ->setForeignKey('vendor_id');
-          $this->hasMany('Bridestiny.BridePortfolios')
+          $this->hasMany('Bridestiny.BrideVendorPortfolios')
                ->setForeignKey('vendor_id');
-          $this->hasOne('Bridestiny.BrideAbout')
+          $this->hasOne('Bridestiny.BrideVendorAbout')
                ->setForeignKey('vendor_id');
-          $this->hasMany('Bridestiny.BrideFaqs')
+          $this->hasMany('Bridestiny.BrideVendorFaqs')
                ->setForeignKey('vendor_id');
           $this->hasMany('Bridestiny.BrideVendorServices')
                ->setForeignKey('vendor_id');
-          $this->hasMany('Bridestiny.BrideCalendars')
+          $this->hasMany('Bridestiny.BrideVendorCalendars')
                ->setForeignKey('vendor_id');
           $this->hasMany('Bridestiny.BrideProducts')
                ->setForeignKey('vendor_id');
@@ -55,7 +58,8 @@ class BrideVendorsTable extends Table
 		$date           = Carbon::now($timezone);
 
 		// Sanitize and capitalize name
-		$entity->name = ucwords(trim($entity->name));
+		$entity->name  = ucwords(trim($entity->name));
+		$entity->phone = str_replace('_', '', trim($entity->phone));
 
 		if ($entity->isNew()) {
                $entity->created   = $date;
@@ -87,16 +91,8 @@ class BrideVendorsTable extends Table
      }
      public function countVendorStatus($status)
 	{
-		$vendors = $this->find()->where(['status' => $status]);
+		$vendors = $this->find('all')->contain('BrideAuth')->where(['BrideAuth.status' => $status, 'BrideAuth.user_type' => 'vendor']);
 		$total   = $vendors->count();
 		return $total;
-     }
-     public function findAuth(\Cake\ORM\Query $query, array $options)
-     {
-          $query
-               ->select(['id', 'email', 'password', 'user_type'])
-               ->where(['BrideVendors.status' => 3]);
-
-          return $query;
      }
 }

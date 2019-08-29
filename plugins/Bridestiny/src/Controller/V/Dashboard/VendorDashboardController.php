@@ -18,6 +18,7 @@ use App\Purple\PurpleProjectApi;
 use Bridestiny\Api\BridestinyApi;
 use App\Form\SearchForm;
 use Bridestiny\Form\VendorSignInForm;
+use Bridestiny\Form\VendorProfileForm;
 use Carbon\Carbon;
 use Melbahja\Seo\Factory;
 use EngageTheme\Functions\ThemeFunction;
@@ -68,7 +69,9 @@ class VendorDashboardController extends AppController
         $this->loadModel('Visitors');
         $this->loadModel('Socials');
 
+        $this->loadModel('Bridestiny.BrideAuth');
         $this->loadModel('Bridestiny.BrideVendors');
+        $this->loadModel('Bridestiny.BrideVendorAbout');
         $this->loadModel('Bridestiny.BrideVendorMedias');
         $this->loadModel('Bridestiny.BrideNotifications');
         $this->loadModel('Bridestiny.BrideSettings');
@@ -199,17 +202,160 @@ class VendorDashboardController extends AppController
             'ldJsonOrganization' => $orgSchema
         ];
         $this->set($data);
-
-        // Vendor Data
-        $vendorData = $this->BrideVendors->find()->where(['id' => $this->Auth->user('id')])->first();
-        $this->set('vendorData', $vendorData);
     }
     public function index()
+    {
+        
+    }
+    public function profile()
+    {
+        $vendor = $this->BrideVendors->find('all')->contain('BrideAuth')->where(['BrideAuth.id' => $this->Auth->user('id'), 'BrideAuth.email' => $this->Auth->user('email')])->limit(1)->first();
+        $about  = $this->BrideVendorAbout->find()->where(['vendor_id' => $vendor->id]);
+
+        $vendorProfileForm = new VendorProfileForm();
+
+        $provincesArray = NULL;
+
+        if (Configure::check('RajaOngkir.apikey') && Configure::check('RajaOngkir.account')) {
+            $rajaongkirApiKey  = Configure::read('RajaOngkir.apikey');
+            $rajaongkirAccType = Configure::read('RajaOngkir.account');
+
+            if ($rajaongkirApiKey != NULL && $rajaongkirAccType != NULL) {
+                $globalFunction      = new GlobalFunctions();
+                $rajaongkirProvinces = $globalFunction->rajaongkirProvinces($rajaongkirApiKey, $rajaongkirAccType);
+                $rajaongkirCities    = $globalFunction->rajaongkirCities($rajaongkirApiKey, $rajaongkirAccType, $vendor->province);
+
+                $provincesArray = [];
+                foreach ($rajaongkirProvinces as $province) {
+                    $provincesArray[$province['province_id']] = $province['province'];
+                }
+
+                $citiesArray = [];
+                foreach ($rajaongkirCities as $city) {
+                    $citiesArray[$city['city_id']] = $city['city_name'];
+                }
+            }
+            else {
+                $provincesArray = NULL;
+            }
+        }
+
+        $data = [
+            'pageTitle'           => 'Dashboard - Profile',
+            'breadcrumb'          => 'Home::Dashboard::Profile',
+            'vendorProfileForm'   => $vendorProfileForm,
+            'ipAddress'           => $this->request->clientIp(),
+            'rajaongkirProvinces' => $provincesArray,
+            'rajaongkirCities'    => $citiesArray
+        ];
+
+        if ($about->count() > 0) {
+            $vendorAbout = $about->first();
+            $data['vendorAbout'] = $vendorAbout->content;
+        }
+        else {
+            $data['vendorAbout'] = NULL;
+        }
+
+        $this->set($data);
+    }
+    public function packages()
+    {
+        
+    }
+    public function projects()
+    {
+        
+    }
+    public function faqs()
+    {
+        
+    }
+    public function orders()
+    {
+        
+    }
+    public function wallet()
     {
         
     }
     public function logout()
     {
         return $this->redirect($this->Auth->logout());
+    }
+    public function ajaxUpdateProfile()
+    {
+        $this->viewBuilder()->enableAutoLayout(false);
+
+        $vendorProfileForm = new VendorProfileForm();
+
+        if ($this->request->is('ajax') || $this->request->is('post')) {
+            if ($vendorProfileForm->execute($this->request->getData())) {
+                $findEmail  = $this->BrideAuth->find()->where(['email' => trim($this->request->getData('email')), 'id <>' => $this->Auth->user('id')]);
+                $findUserId = $this->BrideVendors->find()->where(['user_id' => trim($this->request->getData('user_id')), 'id <>' => $this->request->getData('id')]);
+                if ($findEmail->count() > 0 ) {
+                    $json = json_encode(['status' => 'error', 'error' => "Email is already used. Please use another email."]);
+                }
+                elseif ($findUserId->count() > 0 ) {
+                    $json = json_encode(['status' => 'error', 'error' => "Vendor ID is already used. Please use another."]);
+                }
+                else {
+                    $vendor = $this->BrideVendors->get($this->request->getData('id'));
+                    $vendor = $this->BrideVendors->patchEntity($vendor, $this->request->getData());
+
+                    if ($this->Auth->user('email') != $this->request->getData('email')) {
+                        $auth = $this->BrideAuth->get($this->Auth->user('id'));
+                        $auth->email = $this->request->getData('email');
+                        $this->BrideAuth->save($auth);
+                    }
+
+                    if ($this->BrideVendors->save($vendor)) {
+                        $findAbout = $this->BrideVendorAbout->find()->where(['vendor_id' => $this->request->getData('id')]);
+                        if ($findAbout->count() > 0 ) {
+                            $about = $this->BrideVendorAbout->get($findAbout->first()->id);
+                        }
+                        else {
+                            $about = $this->BrideVendorAbout->newEntity();
+                        }
+                        $about = $this->BrideVendorAbout->patchEntity($about, $this->request->getData());
+                        $about->content   = $this->request->getData('bride_vendor_about.content');
+                        $about->vendor_id = $this->request->getData('id');
+                        $this->BrideVendorAbout->save($about);
+
+                        /**
+                         * Save data to Notifications Table
+                         */
+                        $vendor = $this->BrideVendors->find('all')->contain('BrideAuth')->where(['BrideVendors.id' => $this->request->getData('id')])->first();
+
+                        $notification = $this->BrideNotifications->newEntity();
+                        $notification->type        = 'Vendors.profile';
+                        $notification->content     = $vendor->name.' has updated it\'s profile. Click to view the vendor.';
+                        $notification->relation_id = $vendor->id;
+
+                        // Send Email to User to Notify author
+
+                        if ($this->BrideNotifications->save($notification)) {
+                            $notification = true;
+                        }
+                        else {
+                            $notification = false;
+                        }
+
+                        $json = json_encode(['status' => 'ok', 'notification' => $notification]);
+                    }
+                    else {
+                        $json = json_encode(['status' => 'error', 'error' => "Can't save data. Please try again."]);
+                    }
+                }
+            }
+            else {
+                $errors = $vendorProfileForm->errors();
+                $json = json_encode(['status' => 'error', 'error' => $errors, 'error_type' => 'form']);
+            }
+            $this->set(['json' => $json]);
+        }
+        else {
+            throw new NotFoundException(__('Page not found'));
+        }
     }
 }

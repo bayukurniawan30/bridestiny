@@ -121,10 +121,9 @@ Become a member today to get access to your custom profile and<br>our exclusive 
                         <div class="uk-form-controls">
                             <?php
                                 echo $this->Form->text('phone', [
-                                    'id'                => 'form-stacked-phone',
-                                    'class'             => 'uk-input',
-                                    'data-parsley-type' => 'number',
-                                    'required'          => 'required'
+                                    'id'       => 'form-stacked-phone',
+                                    'class'    => 'uk-input',
+                                    'required' => 'required'
                                 ]);
                             ?>
                         </div>
@@ -192,8 +191,22 @@ Become a member today to get access to your custom profile and<br>our exclusive 
                         <span class="devider-core"></span>
                     </div>
 
-                    <div class="uk-margin-small uk-width-1-1">
-                        <label class="uk-form-label" for="form-stacked-ktp">KTP<span class="required-form-label">*</span></label>
+                    <div class="uk-margin-small uk-width-2-3">
+                        <label class="uk-form-label" for="form-stacked-ktp-number">KTP<span class="required-form-label">*</span></label>
+                        <div class="uk-form-controls">
+                            <?php
+                                echo $this->Form->text('ktp_number', [
+                                    'id'                => 'form-stacked-ktp-number',
+                                    'class'             => 'uk-input',
+                                    'data-parsley-minlength' => '16',
+                                    'data-parsley-maxlength' => '16',
+                                    'required'          => 'required'
+                                ]);
+                            ?>
+                        </div>
+                    </div>
+                    <div class="uk-margin-small uk-width-1-3">
+                        <label class="uk-form-label" for="form-stacked-ktp">Upload KTP<span class="required-form-label">*</span></label>
                         <div class="uk-form-controls">
                             <div class="uk-width-1-1" uk-form-custom="target: true">
                                 <?php
@@ -213,8 +226,20 @@ Become a member today to get access to your custom profile and<br>our exclusive 
                             </div>
                         </div>
                     </div>
-                    <div class="uk-margin-small uk-width-1-1">
-                        <label class="uk-form-label" for="form-stacked-npwp">NPWP<span class="required-form-label">*</span></label>
+                    <div class="uk-margin-small uk-width-2-3">
+                        <label class="uk-form-label" for="form-stacked-npwp-number">NPWP<span class="required-form-label">*</span></label>
+                        <div class="uk-form-controls">
+                            <?php
+                                echo $this->Form->text('npwp_number', [
+                                    'id'       => 'form-stacked-npwp-number',
+                                    'class'    => 'uk-input',
+                                    'required' => 'required'
+                                ]);
+                            ?>
+                        </div>
+                    </div>
+                    <div class="uk-margin-small uk-width-1-3">
+                        <label class="uk-form-label" for="form-stacked-npwp">Upload NPWP<span class="required-form-label">*</span></label>
                         <div class="uk-form-controls">
                             <div class="uk-width-1-1" uk-form-custom="target: true">
                                 <?php
@@ -303,6 +328,10 @@ Become a member today to get access to your custom profile and<br>our exclusive 
 
 <script>
     $(document).ready(function() {
+        $('#form-stacked-phone').inputmask("999999999999");
+        $('#form-stacked-ktp-number').inputmask("9999999999999999");
+        $('#form-stacked-npwp-number').inputmask("99.999.999.9-999.999");
+
         var t = "form-sign-up",
             n = "Bridestiny.signUp",
             o = "redirect",

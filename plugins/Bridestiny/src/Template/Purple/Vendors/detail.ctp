@@ -36,7 +36,7 @@
                     <dd><?= $vendor->name ?></dd>
 
                     <dt class="uk-margin-small-bottom"><strong>Email</strong></dt>
-                    <dd><?= $vendor->email ?></dd>
+                    <dd><?= $vendor->bride_auth->email ?></dd>
 
                     <dt class="uk-margin-small-bottom"><strong>Phone</strong></dt>
                     <dd><?= $vendor->mobile_phone ?></dd>
@@ -69,14 +69,14 @@
 </div>
 
 <?php
-    if ($vendor->status == '1') {
+    if ($vendor->bride_auth->status == '3') {
         echo $this->element('Bridestiny.Purple/Modal/confirm_vendor_modal', [
-            'form' => $vendorConfirm,
+            'form'   => $vendorConfirm,
             'vendor' => $vendor,
         ]);
 
         echo $this->element('Bridestiny.Purple/Modal/decline_vendor_modal', [
-            'form' => $vendorReject,
+            'form'   => $vendorReject,
             'vendor' => $vendor,
         ]);
     }

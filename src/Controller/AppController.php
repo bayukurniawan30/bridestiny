@@ -48,12 +48,6 @@ class AppController extends Controller
         $this->loadComponent('Flash');
 
         $this->loadComponent('Auth', [
-            'loginRedirect' => [
-                'controller' => 'VendorDashboard',
-                'action'     => 'index',
-                'plugin'     => 'Bridestiny',
-                'prefix'     => 'v/dashboard',
-            ],
             'logoutRedirect' => [
                 '_name' => 'home'
             ],
@@ -66,7 +60,7 @@ class AppController extends Controller
                 'Form' => [
                     'fields'    => ['username' => 'email', 'password' => 'password'],
                     'finder'    => 'auth',
-                    'userModel' => 'Bridestiny.BrideVendors',
+                    'userModel' => 'Bridestiny.BrideAuth',
                 ]
             ],
             'storage' => 'Session'
@@ -88,14 +82,16 @@ class AppController extends Controller
             $userType = $user['user_type'];
             $userData = NULL;
 
+            $this->loadModel('Bridestiny.BrideAuth');
+
             if ($userType == 'vendor') {
                 $this->loadModel('Bridestiny.BrideVendors');
-                $query    = $this->BrideVendors->find()->where(['id' => $user['id'], 'email' => $user['email']])->limit(1)->first();
+                $query    = $this->BrideVendors->find('all')->contain('BrideAuth')->contain('BrideVendorAbout')->where(['BrideAuth.id' => $user['id'], 'BrideAuth.email' => $user['email']])->limit(1)->first();
                 $userData = $query;
             }
             elseif ($userType == 'customer') {
                 $this->loadModel('Bridestiny.BrideCustomers');
-                $query    = $this->BrideCustomers->find()->where(['id' => $user['id'], 'email' => $user['email']])->limit(1)->first();
+                $query    = $this->BrideCustomers->find('all')->contain('BrideAuth')->where(['BrideAuth.id' => $user['id'], 'BrideAuth.email' => $user['email']])->limit(1)->first();
                 $userData = $query;
             }
 

@@ -2240,4 +2240,42 @@ textarea{
 .bridestiny-signed-in-dropdown > li .uk-width-expand {
     margin-top: -5px!important;
 }
-
+.dashboard-with-image {
+    min-height: 400px;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.bridestiny-dashboard-page-title-divider {
+    width: 150px;
+    height: 1px;
+    background-color: #ffffff;
+    margin: 0 auto;
+}
+.required-form-label {
+    color: #ff0000;
+    font-size: 14px;
+}
+.uk-radio:checked, .uk-checkbox:checked, .uk-checkbox:indeterminate {
+    background-color: #eb5b64;
+}
+input.parsley-success, select.parsley-success, textarea.parsley-success {
+    border-color: rgb(229, 229, 229);
+    color: rgb(102, 102, 102);
+}
+.dashboard-uk-icon {
+    color: #eb6068;
+}
+.dashboard-uk-icon:hover, .dashboard-uk-icon:focus {
+    color: #ff0000;
+}
+.dashboard-form .uk-input, .dashboard-form .uk-select, .dashboard-form .uk-textarea, .dashboard-form .form-control {
+    font-size: 15px;
+}  
+.dashboard-form .uk-select {
+    height: 50px!important;
+}
+.dashboard-form .input-group-text {
+    background-color: rgba(0,0,0,.05);
+}
+.dashboard-form .input-group-text, .dashboard-form .form-control {
+    border-radius: 0;
+}

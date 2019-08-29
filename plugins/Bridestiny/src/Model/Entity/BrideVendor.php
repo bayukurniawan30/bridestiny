@@ -4,7 +4,6 @@ namespace Bridestiny\Model\Entity;
 
 use Cake\ORM\Entity;
 use Cake\Http\ServerRequest;
-use Cake\Auth\DefaultPasswordHasher;
 use Bridestiny\Functions\GlobalFunctions;
 
 class BrideVendor extends Entity
@@ -13,28 +12,6 @@ class BrideVendor extends Entity
 		'*' => true,
 		'id' => false,
     ];
-    protected function _setPassword($password)
-   	{
-       	return (new DefaultPasswordHasher())->hash($password);
-	}
-    protected function _getTextStatus()
-    {
-        if ($this->status == '0') {
-            return 'Unverified';
-        }
-        elseif ($this->status == '1') {
-            return 'Verified';
-        }
-        elseif ($this->status == '2') {
-            return 'Banned';
-        }
-        elseif ($this->status == '3') {
-            return 'Active';
-        }
-        elseif ($this->status == '4') {
-            return 'Declined';
-        }
-    }
     protected function _getFullName()
     {
         return ucwords($this->name);

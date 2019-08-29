@@ -2,6 +2,17 @@
 .product-card-title a, .product-card-price {
     font-weight: 700;
 }
+.nav-page:hover {
+    color: var(--primary)!important;
+}
+.nav-selected-page {
+    background: linear-gradient(to right, #84d9d2, #07cdae)!important;
+    color: #ffffff!important;
+}
+.nav-selected-page:hover {
+    color: #ffffff!important;
+}
+
 
 /* Form */
 .block-dynamic-field {

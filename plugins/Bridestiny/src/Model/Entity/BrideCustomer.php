@@ -4,7 +4,6 @@ namespace Bridestiny\Model\Entity;
 
 use Cake\ORM\Entity;
 use Cake\Http\ServerRequest;
-use Cake\Auth\DefaultPasswordHasher;
 use Bridestiny\Functions\GlobalFunctions;
 
 class BrideCustomer extends Entity
@@ -13,19 +12,6 @@ class BrideCustomer extends Entity
 		'*' => true,
 		'id' => false,
     ];
-    protected function _setPassword($password)
-   	{
-       	return (new DefaultPasswordHasher())->hash($password);
-	}
-    protected function _getTextStatus()
-    {
-        if ($this->status == '0') {
-            return 'Draft';
-        }
-        elseif ($this->status == '1') {
-            return 'Publish';
-        }
-    }
     protected function _getFullName()
     {
         return ucwords($this->first_name . ' ' . $this->last_name);

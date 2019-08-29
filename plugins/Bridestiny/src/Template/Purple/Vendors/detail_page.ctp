@@ -19,7 +19,7 @@
         ]) ?>
 
         <?php
-            if ($vendor->status == '1' || $vendor->status == '2' || $vendor->status == '3') {
+            if ($vendor->bride_auth->status == '1' || $vendor->bride_auth->status == '2' || $vendor->bride_auth->status == '3') {
                 echo $this->element('Bridestiny.Purple/Vendors/profile_navigation', [
                     'vendor' => $vendor,
                 ]);
@@ -28,30 +28,11 @@
     </div>
 
     <div class="col-md-8 grid-margin">
-        <div class="card">
-            <div class="card-header">
-                <h4 class="card-title uk-margin-remove-bottom">Documents</h4>
-            </div>
-            <div class="card-body">
-                <?php
-                    $ktpImage = $this->request->getAttribute("webroot") . 'uploads/images/original/' . $ktp->name;
-                    $npwpImage = $this->request->getAttribute("webroot") . 'uploads/images/original/' . $npwp->name;
-
-                ?>
-                <div uk-grid>
-                    <div>
-                        <div uk-lightbox>
-                            <a class="uk-button uk-button-default" href="<?= $ktpImage ?>" data-alt="KTP" data-caption="KTP - <?= $vendor->name ?>">Open KTP</a>
-                        </div>    
-                    </div>
-                    <div>
-                        <div uk-lightbox>
-                            <a class="uk-button uk-button-default" href="<?= $npwpImage ?>" data-alt="NPWP" data-caption="NPWP - <?= $vendor->name ?>">Open NPWP</a>
-                        </div>    
-                    </div>
-                </div>
-            </div>
-        </div>
+        <?php
+            if ($this->request->getParam('page') == 'documents') {
+                echo $this->element('Bridestiny.Purple/Vendors/detail_documents');
+            }
+        ?>
     </div>
 </div>
 

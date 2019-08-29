@@ -26,6 +26,7 @@ class BrideVendorAboutTable extends Table
 
 		if ($entity->isNew()) {
 			$entity->created  = $date;
+			$entity->content  = strip_tags(trim($entity->content));
 			$entity->status   = '1';
         }
 		else {

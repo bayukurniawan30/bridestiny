@@ -18,6 +18,11 @@
         '_name'  => $routePrefix . 'VendorsFilter',
         'filter' => 'active',
     ]);
+
+    $filterDeclinedUrl = $this->Url->build([
+        '_name'  => $routePrefix . 'VendorsFilter',
+        'filter' => 'declined',
+    ]);
 ?>
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
@@ -42,6 +47,7 @@
                             <li class=""><a href="<?= $filterVerifiedUrl ?>">Verified (<?= $verified; ?>)</a></li>
                             <li class=""><a href="<?= $filterBannedUrl ?>">Banned (<?= $banned; ?>)</a></li>
                             <li class=""><a href="<?= $filterActiveUrl ?>">Active (<?= $active; ?>)</a></li>
+                            <li class=""><a href="<?= $filterDeclinedUrl ?>">Declined (<?= $declined; ?>)</a></li>
                         </ul>
                     </div>
                 </div>
@@ -94,7 +100,7 @@
                                     <?= $vendor->name ?>
                                 </td>
                                 <td>
-                                    <a href="mailto:<?= $vendor->email ?>"><?= $vendor->email ?></a>
+                                    <a href="mailto:<?= $vendor->bride_auth->email ?>"><?= $vendor->bride_auth->email ?></a>
                                 </td>
                                 <td>
                                 <a href="tel:<?= $vendor->mobile_phone ?>"><?= $vendor->mobile_phone ?></a>
@@ -106,7 +112,7 @@
                                     <span data-livestamp="<?= $vendor->created ?>"></span>
                                 </td>
                                 <td>
-                                    <?= $vendor->text_status ?>
+                                    <?= $vendor->bride_auth->text_status ?>
                                 </td>
                                 <td class="text-center">
                                     <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" uk-tooltip="View Vendor" onclick="location.href='<?= $viewUrl; ?>'">

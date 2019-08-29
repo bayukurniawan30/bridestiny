@@ -1,6 +1,7 @@
 <?= $this->Html->script('/credintial/js/bootstrap.min.js'); ?>
 <?= $this->Html->script('/credintial/js/jquery.nanoscroller.min.js'); ?>
 <?= $this->Html->script('/credintial/js/custom.js'); ?>
+<?= $this->Html->script('/plugins/inputmask/jquery.inputmask.min.js'); ?>
 
 <!-- UI Kit -->
 <?= $this->Html->script('/master-assets/plugins/uikit/js/uikit.js'); ?>

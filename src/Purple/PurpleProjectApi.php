@@ -26,7 +26,9 @@ class PurpleProjectApi
 		        // Check email is valid or not
 		        $response     = $http->get($this->apiPath() . '/verify/email/'.$email.'.json');
 		        $verifyResult = $response->body();
-		        $decodeResult = json_decode($verifyResult, true);
+				$decodeResult = json_decode($verifyResult, true);
+		        Log::write('debug', $decodeResult);
+				
 
 		        if ($decodeResult['message'] == 'success' && $decodeResult['isValid'] == true) {
 		        	return true;
