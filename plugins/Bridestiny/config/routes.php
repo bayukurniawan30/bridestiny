@@ -10,6 +10,122 @@ Router::plugin(
     function (RouteBuilder $routes) {
         // $routes->fallbacks(DashedRoute::class);
 
+        $globalFunction = new GlobalFunctions();
+        $routePrefix    = $globalFunction->routePrefix();
+
+        $routes->prefix('api', function ($routes) use ($routePrefix) {
+            $apiVersion     = 'v1';
+            $apiVersionName = 'Version1';
+            $routeName  	= $routePrefix . 'Api' . $apiVersion;
+
+            /**
+             * Vendors Routes
+             */
+
+            // Fetch All Vendors
+            /**
+             * Query String
+             * order_by => name
+             * order    => asc, desc
+             * city (int)
+             * paging (int)
+             * limit (int)
+             */
+            $routes->connect('/' . $apiVersion . '/vendors/view', 
+                ['controller' => 'Vendors', 'action' => 'view'], 
+                ['_name' => $routeName . 'ViewVendors'])
+            ->setMethods(['GET']);
+
+            // Fetch All Vendors Specific Category
+            /**
+             * Query String
+             * order_by => name
+             * order    => asc, desc
+             * city (int)
+             * paging (int)
+             * limit (int)
+             */
+            $routes->connect('/' . $apiVersion . '/vendors/:category/view', 
+                ['controller' => 'Vendors', 'action' => 'viewByCategory'], 
+                ['_name' => $routeName . 'ViewVendorsByCategory'])
+            ->setPass(['category'])
+            ->setMethods(['GET']);
+
+            // Fetch Vendor Detail
+            $routes->connect('/' . $apiVersion . '/vendor/detail/:slug', 
+                    ['controller' => 'Vendors', 'action' => 'detail'], 
+                    ['_name' => $routeName . 'VendorDetail'])
+                ->setPass(['slug'])
+                ->setMethods(['GET']);
+
+            // Sign Up Vendor
+            $routes->connect('/' . $apiVersion . '/vendor/sign-up', 
+                    ['controller' => 'Vendors', 'action' => 'signUp'], 
+                    ['_name' => $routeName . 'VendorSignUp'])
+                ->setMethods(['POST']);
+
+            // Verify Vendor
+            $routes->connect('/' . $apiVersion . '/vendor/verify', 
+                    ['controller' => 'Vendors', 'action' => 'verify'], 
+                    ['_name' => $routeName . 'VendorVerify'])
+                ->setMethods(['POST']);
+            
+            // Sign In Vendor
+            $routes->connect('/' . $apiVersion . '/vendor/sign-in', 
+                    ['controller' => 'Vendors', 'action' => 'signIn'], 
+                    ['_name' => $routeName . 'VendorSignIn'])
+                ->setMethods(['POST']);
+
+            /**
+             * User Actions Routes
+             */
+            
+             // Fetch Provinces List
+            $routes->connect('/' . $apiVersion . '/user-action/provinces/list', 
+                    ['controller' => 'UserActions', 'action' => 'provincesList'], 
+                    ['_name' => $routeName . 'UserActionProvinceList'])
+                ->setMethods(['GET']);
+
+            // Fetch Province Detail
+            $routes->connect('/' . $apiVersion . '/user-action/province/detail/:id', 
+                    ['controller' => 'UserActions', 'action' => 'provinceDetail'], 
+                    ['_name' => $routeName . 'UserActionProvinceDetail'])
+                ->setPatterns(['id' => '\d+'])
+                ->setPass(['id'])
+                ->setMethods(['GET']);
+
+            // Fetch Cities List
+            $routes->connect('/' . $apiVersion . '/user-action/cities/:province/list', 
+                    ['controller' => 'UserActions', 'action' => 'citiesList'], 
+                    ['_name' => $routeName . 'UserActionCitiesList'])
+                ->setPatterns(['province' => '\d+'])
+                ->setPass(['province'])
+                ->setMethods(['GET']);
+
+            // Fetch City Detail
+            $routes->connect('/' . $apiVersion . '/user-action/city/detail/:id', 
+                    ['controller' => 'UserActions', 'action' => 'cityDetail'], 
+                    ['_name' => $routeName . 'UserActionCityDetail'])
+                ->setPatterns(['id' => '\d+'])
+                ->setPass(['id'])
+                ->setMethods(['GET']);
+
+            /**
+             * Categories Routes
+             */
+
+            // Fetch Categories
+            /**
+             * Query String
+             * order_by => name
+             * order    => asc, desc
+             */
+            $routes->connect('/' . $apiVersion . '/categories/view', 
+                    ['controller' => 'Categories', 'action' => 'view'], 
+                    ['_name' => $routeName . 'CategoriesView'])
+                ->setMethods(['GET']);
+
+        });
     }
 );
 

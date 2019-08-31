@@ -32,12 +32,15 @@
             if ($this->request->getParam('page') == 'documents') {
                 echo $this->element('Bridestiny.Purple/Vendors/detail_documents');
             }
+            elseif ($this->request->getParam('page') == 'about') {
+                echo $this->element('Bridestiny.Purple/Vendors/detail_about');
+            }
         ?>
     </div>
 </div>
 
 <?php
-    if ($vendor->status == '1') {
+    if ($vendor->bride_auth->status == '3') {
         echo $this->element('Bridestiny.Purple/Modal/confirm_vendor_modal', [
             'form' => $vendorConfirm,
             'vendor' => $vendor,

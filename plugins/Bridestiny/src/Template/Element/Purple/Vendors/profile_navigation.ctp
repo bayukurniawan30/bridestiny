@@ -44,6 +44,9 @@
                 </a>
             </li>
 
+            <?php
+                if ($vendor->bride_auth->status == '1'):
+            ?>
             <li class="uk-width-1-1 uk-margin-remove-top" style="position: relative">
                 <a href="<?= $aboutUrl ?>">
                 <div class="uk-card uk-card-default uk-card-small uk-card-body nav-page <?php if ($this->request->getParam('page') == 'about') echo 'nav-selected-page' ?>"">
@@ -54,7 +57,7 @@
                     </div>
                 </div>
                 </a>
-            </li>
+            </li> 
 
             <li class="uk-width-1-1 uk-margin-remove-top" style="position: relative">
                 <a href="<?= $portfoliosUrl ?>">
@@ -91,6 +94,9 @@
                 </div>
                 </a>
             </li>
+            <?php
+                endif;
+            ?> 
         </ul>
     </div>
 </div>

@@ -3,6 +3,7 @@
 namespace Bridestiny\Model\Entity;
 
 use Cake\ORM\Entity;
+use Cake\Core\Configure;
 use Cake\Http\ServerRequest;
 use Bridestiny\Functions\GlobalFunctions;
 
@@ -23,6 +24,29 @@ class BrideVendor extends Entity
     protected function _getMobilePhone()
     {
         return '+' . $this->calling_code . $this->phone;
+    }
+    protected function _getProvinceName()
+    {
+        Configure::load('Bridestiny.purple');
+
+        $rajaongkirApiKey  = Configure::read('RajaOngkir.apikey');
+        $rajaongkirAccType = Configure::read('RajaOngkir.account');
+
+        $globalFunction     = new GlobalFunctions();
+        $rajaongkirProvince = $globalFunction->rajaongkirProvinceDetail($rajaongkirApiKey, $rajaongkirAccType, $this->province);
+        return $rajaongkirProvince['province'];
+
+    }
+    protected function _getCityName()
+    {
+        Configure::load('Bridestiny.purple');
+
+        $rajaongkirApiKey  = Configure::read('RajaOngkir.apikey');
+        $rajaongkirAccType = Configure::read('RajaOngkir.account');
+
+        $globalFunction = new GlobalFunctions();
+        $rajaongkirCity = $globalFunction->rajaongkirCityDetail($rajaongkirApiKey, $rajaongkirAccType, $this->city);
+        return $rajaongkirCity['city_name'];
     }
     protected function _getCreated($created)
     {

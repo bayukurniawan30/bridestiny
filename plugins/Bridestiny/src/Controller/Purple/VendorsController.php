@@ -218,7 +218,7 @@ class VendorsController extends AppController
             $this->set('vendorConfirm', $vendorConfirm);
             $this->set('vendorReject', $vendorReject);
 
-            $availablePage = ['documents', 'about', 'portfolios', 'faqs', 'products'];
+            $availablePage = ['documents', 'about', 'projects', 'faqs', 'products'];
 
             if (in_array($page, $availablePage)) {
                 if ($page == 'documents') {
@@ -231,6 +231,10 @@ class VendorsController extends AppController
                     ];
 
                     $this->set($data);
+                }
+                elseif ($page == 'about') {
+                    $about = $this->BrideVendorAbout->find()->where(['vendor_id' => $vendor->id])->limit(1);
+                    $this->set('about', $about);
                 }
             }
             else {

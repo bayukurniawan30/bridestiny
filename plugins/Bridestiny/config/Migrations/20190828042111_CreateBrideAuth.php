@@ -20,7 +20,6 @@ class CreateBrideAuth extends AbstractMigration
         ]);
         $table->addColumn('password', 'string', [
             'default' => null,
-            'limit' => 255,
             'null' => false,
         ]);
         $table->addColumn('user_type', 'string', [
