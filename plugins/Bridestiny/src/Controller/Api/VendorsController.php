@@ -10,6 +10,7 @@ use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\View\Exception\MissingTemplateException;
 use Cake\Auth\DefaultPasswordHasher;
+use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\ServerRequest;
 use Cake\Utility\Text;
 use Cake\Filesystem\File;
@@ -21,6 +22,7 @@ use Bridestiny\Api\BridestinyApi;
 use Bridestiny\Validator\Api\VendorSignInValidator;
 use Bridestiny\Validator\Api\VendorSignUpValidator;
 use Bridestiny\Validator\Api\VendorVerifyValidator;
+use Bridestiny\Validator\Api\VendorUpdateProfileValidator;
 use Carbon\Carbon;
 use EngageTheme\Functions\ThemeFunction;
 use Bridestiny\Functions\GlobalFunctions;
@@ -54,18 +56,20 @@ class VendorsController extends AppController
             'authenticate' => [
                 'Basic' => [
                     'fields'    => ['username' => 'email', 'password' => 'api_key'],
-                    'finder'    => 'auth',
                     'userModel' => 'Bridestiny.BrideAuth',
                 ],
             ],
             'authorize'            => 'Controller',
             'authError'            => 'Unauthorized access',
             'storage'              => 'Memory',
-            'unauthorizedRedirect' => false
+            'unauthorizedRedirect' => false,
+            'loginAction'          => [
+                'action' => 'loginApi'
+            ]
         ]);
 
         // Allow GET method
-        $this->Auth->allow(['view', 'viewByCategory', 'detail', 'signUp', 'verify', 'signIn']);
+        $this->Auth->allow(['loginApi', 'view', 'viewByCategory', 'detail', 'signUp', 'verify', 'signIn']);
 
         $this->loadModel('Admins');
         $this->loadModel('Settings');
@@ -111,13 +115,23 @@ class VendorsController extends AppController
     public function isAuthorized($user)
     {
         // Only admins can access admin functions
-        if (isset($user['level']) && $user['level'] == '1') {
+        if (isset($user['status']) && $user['status'] == '1' && $user['user_type'] == 'vendor') {
             return true;
         }
 
         // Default deny
         return false;
     }
+    public function loginApi()
+	{
+		$user = $this->Auth->identify();
+		if ($user && $user['status'] == '1' && $user['user_type'] == 'vendor') {
+			$this->Auth->setUser($user);
+		} 
+		else {
+	        throw new UnauthorizedException(__('Unauthorized'));
+        }
+	}
     public function uploadImages($file, $id = 1)
 	{
 		if (!empty($file)) {
@@ -755,5 +769,120 @@ class VendorsController extends AppController
         else {
 	        throw new NotFoundException(__('Page not found'));
         }
+    }
+    public function updateProfile() 
+    {
+        if (($this->request->is('put') || $this->request->is('post')) && $this->request->hasHeader('X-Purple-Api-Key')) {
+            $apiKey = trim($this->request->getHeaderLine('X-Purple-Api-Key'));
+
+            $apiAccessKey = $this->Settings->settingsApiAccessKey();
+
+            $error = NULL;
+
+            if ($apiAccessKey == $apiKey) {
+                $validator     = new VendorUpdateProfileValidator();
+                $errorValidate = $validator->validate()->errors($this->request->getData());
+                if (empty($errorValidate)) {
+                    $findEmail  = $this->BrideAuth->find()->where(['email' => $this->Auth->user('email'), 'id <>' => $this->Auth->user('id')]);
+                    $findUserId = $this->BrideVendors->find()->where(['user_id' => trim($this->request->getData('user_id')), 'id <>' => $this->Auth->user('id')]);
+                    if ($findEmail->count() > 0 ) {
+                        $return = [
+                            'status' => 'error',
+                            'error'  => "Email is already used. Please use another email"
+                        ];
+                    }
+                    elseif ($findUserId->count() > 0 ) {
+                        $return = [
+                            'status' => 'error',
+                            'error'  => "Vendor ID is already used. Please use another"
+                        ];
+                    }
+                    else {
+                        $vendor = $this->BrideVendors->find()->where(['auth_id' => $this->Auth->user('id')])->limit(1)->first();
+                        $vendor = $this->BrideVendors->patchEntity($vendor, $this->request->getData());
+
+                        if ($this->Auth->user('email') != $this->request->getData('email')) {
+                            $auth = $this->BrideAuth->get($this->Auth->user('id'));
+                            $auth->email = $this->request->getData('email');
+                            $this->BrideAuth->save($auth);
+                        }
+
+                        if ($this->BrideVendors->save($vendor)) {
+                            $findAbout = $this->BrideVendorAbout->find()->where(['vendor_id' => $vendor->id]);
+                            if ($findAbout->count() > 0 ) {
+                                $about = $this->BrideVendorAbout->get($findAbout->first()->id);
+                            }
+                            else {
+                                $about = $this->BrideVendorAbout->newEntity();
+                            }
+                            $about = $this->BrideVendorAbout->patchEntity($about, $this->request->getData());
+                            $about->content   = $this->request->getData('about');
+                            $about->vendor_id = $vendor->id;
+                            $this->BrideVendorAbout->save($about);
+
+                            /**
+                             * Save data to Notifications Table
+                             */
+                            $vendor = $this->BrideVendors->find('all')->contain('BrideAuth')->where(['BrideVendors.id' => $vendor->id])->first();
+
+                            $notification = $this->BrideNotifications->newEntity();
+                            $notification->type        = 'Vendors.profile';
+                            $notification->content     = $vendor->name.' has updated it\'s profile. Click to view the vendor.';
+                            $notification->relation_id = $vendor->id;
+
+                            // Send Email to User to Notify author
+
+                            if ($this->BrideNotifications->save($notification)) {
+                                $notification = true;
+                            }
+                            else {
+                                $notification = false;
+                            }
+
+                            $return = [
+                                'status'       => 'ok',
+                                'error'        => $error,
+                                'notification' => true
+                            ];
+                        }
+                        else {
+                            $return = [
+                                'status' => 'ok',
+                                'error'  => "Can't save data"
+                            ];
+                        }
+                    }
+                }
+                else {
+                    $return = [
+                        'status' => 'error',
+                        'error'  => $errorValidate
+                    ];
+                }
+            }
+            else {
+                $return = [
+                    'status' => 'error',
+                    'error'  => 'Invalid access key'
+                ];
+            }
+
+            if (Configure::read('debug')) {
+                $return['data'] = $this->request->getData();
+            }
+
+            $json = json_encode($return, JSON_PRETTY_PRINT);
+
+            $this->response = $this->response->withType('json');
+            $this->response = $this->response->withStringBody($json);
+
+            $this->set(compact('json'));
+            $this->set('_serialize', 'json');
+
+        }
+        else {
+	        throw new NotFoundException(__('Page not found'));
+        }
+
     }
 }

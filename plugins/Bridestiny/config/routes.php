@@ -22,6 +22,10 @@ Router::plugin(
              * Vendors Routes
              */
 
+            $routes->connect('/' . $apiVersion . '/vendor/login-api', 
+                ['controller' => 'Vendors', 'action' => 'loginApi'], 
+                ['_name' => $routeName . 'VendorLoginApi']);
+
             // Fetch All Vendors
             /**
              * Query String
@@ -75,6 +79,17 @@ Router::plugin(
                     ['controller' => 'Vendors', 'action' => 'signIn'], 
                     ['_name' => $routeName . 'VendorSignIn'])
                 ->setMethods(['POST']);
+
+            // Update Profile
+            /**
+             * Need auth (Basic Auth)
+             * username => Vendor Email
+             * password => Vendor API Key
+             */
+            $routes->connect('/' . $apiVersion . '/vendor/profile/update', 
+                    ['controller' => 'Vendors', 'action' => 'updateProfile'], 
+                    ['_name' => $routeName . 'VendorUpdateProfile'])
+                ->setMethods(['PUT', 'POST']);
 
             /**
              * User Actions Routes

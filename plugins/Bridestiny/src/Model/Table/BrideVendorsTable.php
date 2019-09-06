@@ -89,6 +89,15 @@ class BrideVendorsTable extends Table
                }
 		}
      }
+     public function findAuth(\Cake\ORM\Query $query, array $options)
+     {
+          $query
+               ->contain('BrideAuth')
+               ->select(['BrideAuth.id', 'BrideAuth.email', 'BrideAuth.password', 'BrideAuth.user_type', 'BrideVendors.api_key', 'BrideVendors.api_key_plain'])
+               ->where(['BrideAuth.status' => 1]);
+
+          return $query;
+     }
      public function countVendorStatus($status)
 	{
 		$vendors = $this->find('all')->contain('BrideAuth')->where(['BrideAuth.status' => $status, 'BrideAuth.user_type' => 'vendor']);

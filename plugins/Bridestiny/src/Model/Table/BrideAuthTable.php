@@ -20,6 +20,19 @@ class BrideAuthTable extends Table
         $this->hasOne('Bridestiny.BrideVendor')
             ->setForeignKey('auth_id');
     }
+    public function beforeSave($event, $entity, $options)
+    {
+          if ($entity->isNew()) {
+               $hasher = new DefaultPasswordHasher();
+
+               // Generate an API 'token'
+               $entity->api_key_plain = Security::hash(Security::randomBytes(32), 'sha256', false);
+
+               // Bcrypt the token so BasicAuthenticate can check
+               // it during login.
+               $entity->api_key = $hasher->hash($entity->api_key_plain);
+          }
+    }
     public function findAuth(\Cake\ORM\Query $query, array $options)
      {
           $query

@@ -596,17 +596,15 @@ class VendorsController extends AppController
     {
         $this->viewBuilder()->enableAutoLayout(false);
 
-        if ($this->request->is('ajax') || $this->request->is('post')) {
-            $user = $this->Auth->identify();
-            if ($user) {
-                $this->Auth->setUser($user);
-                $json = json_encode(['status' => 'ok', 'user' => $this->Auth->user()]);
-            } 
-            else {
-                $json = json_encode(['status' => 'error', 'error' => 'Email or password is incorrect.']);
-            }
-
-            $this->set(['json' => $json]);
+        $user = $this->Auth->identify();
+        if ($user) {
+            $this->Auth->setUser($user);
+            $json = json_encode(['status' => 'ok', 'user' => $this->Auth->user()]);
+        } 
+        else {
+            $json = json_encode(['status' => 'error', 'error' => 'Email or password is incorrect.']);
         }
+
+        $this->set(['json' => $json]);
     }
 }

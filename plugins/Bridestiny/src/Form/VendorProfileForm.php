@@ -30,6 +30,17 @@ class VendorProfileForm extends Form
                     ]])
                   ->notEmpty('user_id', 'Vendor ID is required')
                   ->requirePresence([
+                    'email' => [
+                        'message' => 'Email is required',
+                    ]])
+                  ->notEmpty('email', 'Email is required')
+                  ->add('email', [
+                        'validFormat' => [
+                            'rule'    => 'email',
+                            'message' => 'Email must be in valid format',
+                        ]
+                    ])
+                  ->requirePresence([
                     'phone' => [
                         'message' => 'Phone is required',
                     ]])
