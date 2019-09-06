@@ -783,8 +783,9 @@ class VendorsController extends AppController
                 $validator     = new VendorUpdateProfileValidator();
                 $errorValidate = $validator->validate()->errors($this->request->getData());
                 if (empty($errorValidate)) {
+
                     $findEmail  = $this->BrideAuth->find()->where(['email' => $this->Auth->user('email'), 'id <>' => $this->Auth->user('id')]);
-                    $findUserId = $this->BrideVendors->find()->where(['user_id' => trim($this->request->getData('user_id')), 'id <>' => $this->Auth->user('id')]);
+                    $findUserId = $this->BrideVendors->find()->where(['user_id' => trim($this->request->getData('user_id')), 'auth_id <>' => $this->Auth->user('id')]);
                     if ($findEmail->count() > 0 ) {
                         $return = [
                             'status' => 'error',
