@@ -708,7 +708,7 @@ class VendorsController extends AppController
                                 ])
                                 ->contain('BrideAuth', function (Query $q) {
                                     return $q
-                                        ->select(['id', 'email', 'user_type', 'status']);  
+                                        ->select(['id', 'email', 'user_type', 'status', 'api_key_plain']);  
                                 })
                                 ->contain('BrideVendorAbout', function (Query $q) {
                                     return $q
